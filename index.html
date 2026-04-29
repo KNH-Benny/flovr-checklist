@@ -6,18 +6,18 @@
 <title>Flovr — Aufbau-Checkliste</title>
 <style>
   :root {
-    --bg: #0d0d14;
-    --surface: #13131f;
-    --surface2: #1a1a2e;
-    --border: #2a2a40;
-    --purple: #5B1EAB;
-    --purple-light: #7c3dcc;
-    --pink: #F5AEF6;
-    --pink-dim: #c47dc5;
-    --text: #e8e8f0;
-    --text-dim: #8888aa;
-    --done-bg: #0f1a0f;
-    --done-text: #4a5a4a;
+    --bg: #0A1A1A;
+    --surface: #0d2020;
+    --surface2: #0f2828;
+    --border: #0D3A38;
+    --purple: #07908E;
+    --purple-light: #0ABFBC;
+    --pink: #4DD9D7;
+    --pink-dim: #0ABFBC;
+    --text: #D8EFEF;
+    --text-dim: #5A8888;
+    --done-bg: #0a1a10;
+    --done-text: #3a5a4a;
     --green: #4ade80;
     --radius: 10px;
   }
@@ -33,7 +33,7 @@
 
   /* HEADER */
   header {
-    background: linear-gradient(135deg, #1a0a2e 0%, #0d0d14 60%);
+    background: linear-gradient(135deg, #062828 0%, #0A1A1A 60%);
     border-bottom: 1px solid var(--border);
     padding: 28px 32px 24px;
     position: sticky;
@@ -58,7 +58,7 @@
   .logo-dot {
     width: 32px;
     height: 32px;
-    background: linear-gradient(135deg, var(--purple), var(--pink));
+    background: linear-gradient(135deg, #07908E, #0ABFBC);
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -115,7 +115,7 @@
 
   .progress-bar {
     height: 100%;
-    background: linear-gradient(90deg, var(--purple), var(--pink));
+    background: linear-gradient(90deg, #07908E, #4DD9D7);
     border-radius: 4px;
     transition: width 0.4s ease;
     min-width: 2px;
@@ -188,7 +188,7 @@
   .section-badge {
     width: 28px;
     height: 28px;
-    background: linear-gradient(135deg, var(--purple), var(--purple-light));
+    background: linear-gradient(135deg, #07908E, #0ABFBC);
     border-radius: 6px;
     display: flex;
     align-items: center;
@@ -342,8 +342,8 @@
 
   .fab-btn:hover { border-color: var(--purple-light); color: var(--text); }
   .fab-btn.danger:hover { border-color: #ff6b6b; color: #ff6b6b; }
-  .fab-btn.primary { border-color: var(--purple); color: var(--pink); background: rgba(91,30,171,0.2); }
-  .fab-btn.primary:hover { background: rgba(91,30,171,0.4); }
+  .fab-btn.primary { border-color: #0ABFBC; color: #4DD9D7; background: rgba(10,191,188,0.12); }
+  .fab-btn.primary:hover { background: rgba(10,191,188,0.25); }
 
   .sync-toast {
     position: fixed;
@@ -386,9 +386,9 @@
     padding: 2px 7px;
     border-radius: 10px;
     font-weight: 600;
-    background: rgba(91, 30, 171, 0.2);
-    color: var(--pink-dim);
-    border: 1px solid rgba(91, 30, 171, 0.3);
+    background: rgba(10, 191, 188, 0.12);
+    color: #0ABFBC;
+    border: 1px solid rgba(10, 191, 188, 0.25);
   }
 </style>
 </head>
