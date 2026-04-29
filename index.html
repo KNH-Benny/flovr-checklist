@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flovr — Aufbau-Checkliste</title>
+<style>
+  :root {
+    --bg: #0d0d14;
+    --surface: #13131f;
+    --surface2: #1a1a2e;
+    --border: #2a2a40;
+    --purple: #5B1EAB;
+    --purple-light: #7c3dcc;
+    --pink: #F5AEF6;
+    --pink-dim: #c47dc5;
+    --text: #e8e8f0;
+    --text-dim: #8888aa;
+    --done-bg: #0f1a0f;
+    --done-text: #4a5a4a;
+    --green: #4ade80;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #1a0a2e 0%, #0d0d14 60%);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 32px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-dot {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 900;
+    color: white;
+  }
+
+  .logo h1 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .logo span {
+    color: var(--text-dim);
+    font-weight: 400;
+    font-size: 14px;
+    margin-left: 4px;
+  }
+
+  .stats {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .stat {
+    text-align: right;
+  }
+
+  .stat-num {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--pink);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    background: var(--border);
+    border-radius: 4px;
+    height: 6px;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple), var(--pink));
+    border-radius: 4px;
+    transition: width 0.4s ease;
+    min-width: 2px;
+  }
+
+  /* SECTION NAV */
+  .section-nav {
+    display: flex;
+    gap: 4px;
+    padding: 12px 32px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-wrap: wrap;
+  }
+
+  .section-nav::-webkit-scrollbar { display: none; }
+
+  .nav-btn {
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+
+  .nav-btn:hover {
+    border-color: var(--purple-light);
+    color: var(--text);
+  }
+
+  .nav-btn.active {
+    background: var(--purple);
+    border-color: var(--purple);
+    color: white;
+  }
+
+  .nav-btn.complete {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 40px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-badge {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, var(--purple), var(--purple-light));
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .section-progress {
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  /* TASK ITEM */
+  .task {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+    margin-bottom: 3px;
+    border: 1px solid transparent;
+  }
+
+  .task:hover {
+    background: var(--surface2);
+    border-color: var(--border);
+  }
+
+  .task.done {
+    background: var(--done-bg);
+    border-color: transparent;
+  }
+
+  .task.done:hover {
+    border-color: #2a3a2a;
+  }
+
+  /* CHECKBOX */
+  .checkbox {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    background: transparent;
+  }
+
+  .task:hover .checkbox {
+    border-color: var(--purple-light);
+  }
+
+  .task.done .checkbox {
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .check-icon {
+    display: none;
+    color: #0d1a0d;
+    font-size: 12px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .task.done .check-icon {
+    display: block;
+  }
+
+  /* TASK LABEL */
+  .task-label {
+    flex: 1;
+  }
+
+  .task-id {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--purple-light);
+    margin-bottom: 2px;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.5px;
+  }
+
+  .task.done .task-id {
+    color: var(--done-text);
+  }
+
+  .task-name {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.4;
+    transition: all 0.2s;
+  }
+
+  .task.done .task-name {
+    color: var(--done-text);
+    text-decoration: line-through;
+    text-decoration-color: #3a5a3a;
+  }
+
+  .task-type {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  .task.done .task-type {
+    color: #2a3a2a;
+  }
+
+  /* RESET BUTTON */
+  .reset-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 10px 18px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-dim);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+
+  .reset-btn:hover {
+    border-color: #ff6b6b;
+    color: #ff6b6b;
+  }
+
+  /* SECTION DONE NOTICE */
+  .section-done {
+    text-align: center;
+    padding: 12px;
+    color: var(--green);
+    font-size: 13px;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .section-done.visible {
+    opacity: 1;
+  }
+
+  /* WEEK BADGE */
+  .week-tag {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-weight: 600;
+    background: rgba(91, 30, 171, 0.2);
+    color: var(--pink-dim);
+    border: 1px solid rgba(91, 30, 171, 0.3);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="logo">
+      <div class="logo-dot">F</div>
+      <h1>Flovr <span>Aufbau-Checkliste</span></h1>
+    </div>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num" id="done-count">0</div>
+        <div class="stat-label">Erledigt</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="total-count">0</div>
+        <div class="stat-label">Gesamt</div>
+      </div>
+    </div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+  </div>
+</header>
+
+<nav class="section-nav" id="section-nav"></nav>
+
+<main id="main"></main>
+
+<button class="reset-btn" onclick="resetAll()">Zurücksetzen</button>
+
+<script>
+const SECTIONS = [
+  {
+    id: 'A', title: 'INFRASTRUKTUR — VPS & Server-Setup', week: 'KW 18',
+    tasks: [
+      { id: 'A-01', name: 'VPS bestellen', type: 'DU' },
+      { id: 'A-02', name: 'Erster SSH-Login & System absichern', type: 'DU' },
+      { id: 'A-03', name: 'fail2ban konfigurieren', type: 'PROMPT + DU' },
+      { id: 'A-04', name: 'nginx + PHP 8.3 + MariaDB installieren', type: 'PROMPT + DU' },
+      { id: 'A-05', name: 'nginx Konfiguration (api + app + flovr.app)', type: 'PROMPT + DU' },
+      { id: 'A-06', name: 'SSL-Zertifikate (Let\'s Encrypt)', type: 'DU' },
+      { id: 'A-07', name: '.env Datei anlegen', type: 'DU' },
+      { id: 'A-08', name: 'MariaDB einrichten', type: 'DU' },
+      { id: 'A-09', name: 'GitHub Actions CI/CD Pipeline', type: 'PROMPT + DU' },
+      { id: 'A-10', name: 'Staging-Umgebung einrichten', type: 'PROMPT + DU' },
+      { id: 'A-11', name: 'Backup-System', type: 'PROMPT + DU' },
+    ]
+  },
+  {
+    id: 'B', title: 'DATENBANK — Schema & Migration', week: 'KW 18',
+    tasks: [
+      { id: 'B-01', name: 'Vollständiges MariaDB Schema', type: 'PROMPT' },
+      { id: 'B-02', name: 'Seed-Daten (Rollen + Presets)', type: 'PROMPT' },
+      { id: 'B-03', name: 'Migrations-System', type: 'PROMPT' },
+    ]
+  },
+  {
+    id: 'C', title: 'PHP BACKEND — Grundgerüst', week: 'KW 18',
+    tasks: [
+      { id: 'C-01', name: 'Verzeichnis-Struktur + Router', type: 'PROMPT' },
+      { id: 'C-02', name: 'Auth-System (vollständig)', type: 'PROMPT' },
+    ]
+  },
+  {
+    id: 'D', title: 'SECURITY HOTFIXES — Frontend', week: 'KW 19',
+    tasks: [
+      { id: 'D-01', name: 'Demo-Users, Apps Script URL, Google Fonts', type: 'PROMPT' },
+      { id: 'D-02', name: 'Git History bereinigen', type: 'DU + PROMPT' },
+    ]
+  },
+  {
+    id: 'E', title: 'STORAGE — Datei-Verwaltung', week: 'KW 19',
+    tasks: [
+      { id: 'E-01', name: 'Storage Interface + Local Provider', type: 'PROMPT' },
+      { id: 'E-02', name: 'Upload-Endpunkte', type: 'PROMPT' },
+      { id: 'E-03', name: 'Google Drive Setup (einmalig)', type: 'DU + PROMPT' },
+    ]
+  },
+  {
+    id: 'F', title: 'CORE REST API — Alle Endpunkte', week: 'KW 19',
+    tasks: [
+      { id: 'F-01', name: 'Organisation & Org-Config', type: 'PROMPT' },
+      { id: 'F-02', name: 'Mitglieder-Endpunkte', type: 'PROMPT' },
+      { id: 'F-03', name: 'Projekte-Endpunkte', type: 'PROMPT' },
+      { id: 'F-04', name: 'Schichten-Endpunkte', type: 'PROMPT' },
+      { id: 'F-05', name: 'Aufgaben, Ideen, Feed', type: 'PROMPT' },
+      { id: 'F-06', name: 'Protokolle', type: 'PROMPT' },
+      { id: 'F-07', name: 'Inventar & Archiv', type: 'PROMPT' },
+      { id: 'F-08', name: 'Admin-Endpunkte & Mitgliedsanträge', type: 'PROMPT' },
+    ]
+  },
+  {
+    id: 'G', title: 'FRONTEND — API-Anbindung & UI-System', week: 'KW 20',
+    tasks: [
+      { id: 'G-01', name: 'API-Client & Org-Config laden', type: 'PROMPT' },
+      { id: 'G-02', name: 'Auth-Anbindung', type: 'PROMPT' },
+      { id: 'G-03', name: 'Projekte, Schichten, Feed von API laden', type: 'PROMPT' },
+      { id: 'G-04', name: 'Mitglieder, Aufgaben, Protokolle, Inventar', type: 'PROMPT' },
+    ]
+  },
+  {
+    id: 'H', title: 'UI-QUALITÄT — Bugs & Next-Level Design', week: 'KW 20',
+    tasks: [
+      { id: 'H-01', name: 'Bekannte Bugs fixen', type: 'PROMPT' },
+      { id: 'H-02', name: 'Next-Level UI — Design System', type: 'PROMPT' },
+      { id: 'H-03', name: 'Owner-Panel (vollständig)', type: 'PROMPT' },
+      { id: 'H-04', name: 'Projekt-Typen dynamisch + UI-Polish', type: 'PROMPT' },
+      { id: 'H-05', name: 'Mobile-Optimierung & Performance', type: 'PROMPT' },
+    ]
+  },
+  {
+    id: 'I', title: 'FLOW-SYSTEM — Templates, Trigger, Smart Defaults', week: 'KW 20',
+    tasks: [
+      { id: 'I-01', name: 'Template-System Backend', type: 'PROMPT' },
+      { id: 'I-02', name: 'Template-Auswahl im Projekt-Wizard', type: 'PROMPT' },
+      { id: 'I-03', name: 'Automation-Trigger (Connected Actions)', type: 'PROMPT' },
+      { id: 'I-04', name: 'Smart Defaults & Progressive Disclosure', type: 'PROMPT' },
+    ]
+  },
+  {
+    id: 'J', title: 'DSGVO & COMPLIANCE', week: 'KW 21',
+    tasks: [
+      { id: 'J-01', name: 'Export & Löschung', type: 'PROMPT' },
+      { id: 'J-02', name: 'DSGVO-UI im Profil', type: 'PROMPT' },
+    ]
+  },
+  {
+    id: 'K', title: 'PRODUKTION & HARDENING', week: 'KW 21',
+    tasks: [
+      { id: 'K-01', name: 'Security Headers + Rate Limiting', type: 'PROMPT' },
+      { id: 'K-02', name: 'Monitoring & Health', type: 'PROMPT' },
+    ]
+  },
+  {
+    id: 'L', title: 'KNH-LAUNCH — Erststart & Datenmigration', week: 'KW 21',
+    tasks: [
+      { id: 'L-01', name: 'EasyVerein-Import', type: 'PROMPT + DU' },
+      { id: 'L-02', name: 'KNH Org-Config einrichten', type: 'DU' },
+      { id: 'L-03', name: 'Ersten Owner-Account aktivieren', type: 'DU' },
+      { id: 'L-04', name: 'IS_LIVE aktivieren', type: 'DU' },
+      { id: 'L-05', name: 'Launch-Checkliste', type: 'REVIEW' },
+    ]
+  },
+  {
+    id: 'M', title: 'ERWEITERUNGEN — Nächste Schritte', week: 'Post-Launch',
+    tasks: [
+      { id: 'M-01', name: 'Chat-Funktion (WebSockets)', type: 'PROMPT' },
+      { id: 'M-02', name: 'Finanz-Tool-Koop', type: 'PROMPT' },
+      { id: 'M-04', name: 'Kalender-API-Anbindung', type: 'PROMPT' },
+      { id: 'M-05', name: 'Meetings & Audio-Transkription', type: 'PROMPT' },
+    ]
+  },
+];
+
+// STATE
+const STATE_KEY = 'flovr-checklist-v1';
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(STATE_KEY) || '{}'); }
+  catch { return {}; }
+}
+
+function saveState(state) {
+  localStorage.setItem(STATE_KEY, JSON.stringify(state));
+}
+
+let state = loadState();
+
+// BUILD UI
+function build() {
+  const nav = document.getElementById('section-nav');
+  const main = document.getElementById('main');
+  nav.innerHTML = '';
+  main.innerHTML = '';
+
+  let totalTasks = 0;
+
+  SECTIONS.forEach(section => {
+    totalTasks += section.tasks.length;
+    const done = section.tasks.filter(t => state[t.id]).length;
+    const allDone = done === section.tasks.length;
+
+    // NAV BUTTON
+    const btn = document.createElement('button');
+    btn.className = 'nav-btn' + (allDone ? ' complete' : '');
+    btn.textContent = section.id + (allDone ? ' ✓' : '');
+    btn.title = section.title;
+    btn.onclick = () => document.getElementById('sec-' + section.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    nav.appendChild(btn);
+
+    // SECTION
+    const sec = document.createElement('div');
+    sec.className = 'section';
+    sec.id = 'sec-' + section.id;
+
+    sec.innerHTML = `
+      <div class="section-header">
+        <div class="section-badge">${section.id}</div>
+        <div class="section-title">${section.title}</div>
+        <span class="week-tag">${section.week}</span>
+        <div class="section-progress">${done}/${section.tasks.length}</div>
+      </div>
+    `;
+
+    section.tasks.forEach(task => {
+      const isDone = !!state[task.id];
+      const el = document.createElement('div');
+      el.className = 'task' + (isDone ? ' done' : '');
+      el.id = 'task-' + task.id;
+      el.innerHTML = `
+        <div class="checkbox"><span class="check-icon">✓</span></div>
+        <div class="task-label">
+          <div class="task-id">${task.id}</div>
+          <div class="task-name">${task.name}</div>
+          <div class="task-type">${task.type}</div>
+        </div>
+      `;
+      el.onclick = () => toggle(task.id);
+      sec.appendChild(el);
+    });
+
+    const doneNotice = document.createElement('div');
+    doneNotice.className = 'section-done' + (allDone ? ' visible' : '');
+    doneNotice.id = 'done-' + section.id;
+    doneNotice.textContent = '✓ Sektion ' + section.id + ' abgeschlossen';
+    sec.appendChild(doneNotice);
+
+    main.appendChild(sec);
+  });
+
+  document.getElementById('total-count').textContent = totalTasks;
+  updateStats();
+}
+
+function toggle(taskId) {
+  state[taskId] = !state[taskId];
+  saveState(state);
+
+  const el = document.getElementById('task-' + taskId);
+  if (state[taskId]) {
+    el.classList.add('done');
+  } else {
+    el.classList.remove('done');
+  }
+
+  // Update section progress
+  SECTIONS.forEach(section => {
+    if (!section.tasks.find(t => t.id === taskId)) return;
+    const done = section.tasks.filter(t => state[t.id]).length;
+    const allDone = done === section.tasks.length;
+
+    const sec = document.getElementById('sec-' + section.id);
+    sec.querySelector('.section-progress').textContent = done + '/' + section.tasks.length;
+
+    const notice = document.getElementById('done-' + section.id);
+    if (allDone) notice.classList.add('visible');
+    else notice.classList.remove('visible');
+
+    // Update nav btn
+    const navBtns = document.querySelectorAll('.nav-btn');
+    navBtns.forEach(btn => {
+      if (btn.title === section.title) {
+        btn.className = 'nav-btn' + (allDone ? ' complete' : '');
+        btn.textContent = section.id + (allDone ? ' ✓' : '');
+      }
+    });
+  });
+
+  updateStats();
+}
+
+function updateStats() {
+  const allTasks = SECTIONS.flatMap(s => s.tasks);
+  const doneCount = allTasks.filter(t => state[t.id]).length;
+  const total = allTasks.length;
+  document.getElementById('done-count').textContent = doneCount;
+  document.getElementById('total-count').textContent = total;
+  document.getElementById('progress-bar').style.width = (doneCount / total * 100) + '%';
+}
+
+function resetAll() {
+  if (!confirm('Wirklich alle Checkboxen zurücksetzen?')) return;
+  state = {};
+  saveState(state);
+  build();
+}
+
+build();
+</script>
+</body>
+</html>
