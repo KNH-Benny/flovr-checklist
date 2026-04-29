@@ -316,6 +316,26 @@
     color: #2a3a2a;
   }
 
+  .neu-badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: rgba(10,191,188,0.18);
+    color: #4DD9D7;
+    border: 1px solid rgba(10,191,188,0.3);
+    margin-left: 6px;
+    vertical-align: middle;
+    letter-spacing: 0.3px;
+  }
+
+  .task.done .neu-badge {
+    background: rgba(58,90,74,0.3);
+    color: #3a5a4a;
+    border-color: #2a3a2a;
+  }
+
   /* RESET BUTTON */
   .fab-group {
     position: fixed;
@@ -479,12 +499,13 @@ const SECTIONS = [
     tasks: [
       { id: 'F-01', name: 'Organisation & Org-Config', type: 'PROMPT' },
       { id: 'F-02', name: 'Mitglieder-Endpunkte', type: 'PROMPT' },
-      { id: 'F-03', name: 'Projekte-Endpunkte', type: 'PROMPT' },
+      { id: 'F-03', name: 'Projekte-Endpunkte + Subprojekte + Budget', type: 'PROMPT', neu: true },
       { id: 'F-04', name: 'Schichten-Endpunkte', type: 'PROMPT' },
       { id: 'F-05', name: 'Aufgaben, Ideen, Feed', type: 'PROMPT' },
       { id: 'F-06', name: 'Protokolle', type: 'PROMPT' },
       { id: 'F-07', name: 'Inventar & Archiv', type: 'PROMPT' },
       { id: 'F-08', name: 'Admin-Endpunkte & Mitgliedsanträge', type: 'PROMPT' },
+      { id: 'F-09', name: 'Social Media Planer', type: 'PROMPT', neu: true },
     ]
   },
   {
@@ -504,6 +525,8 @@ const SECTIONS = [
       { id: 'H-03', name: 'Owner-Panel (vollständig)', type: 'PROMPT' },
       { id: 'H-04', name: 'Projekt-Typen dynamisch + UI-Polish', type: 'PROMPT' },
       { id: 'H-05', name: 'Mobile-Optimierung & Performance', type: 'PROMPT' },
+      { id: 'H-06', name: 'Social Media Tab — Redaktionskalender & Kanban', type: 'PROMPT', neu: true },
+      { id: 'H-07', name: 'Subprojekte & Budget im Projekt-Detail', type: 'PROMPT', neu: true },
     ]
   },
   {
@@ -513,6 +536,13 @@ const SECTIONS = [
       { id: 'I-02', name: 'Template-Auswahl im Projekt-Wizard', type: 'PROMPT' },
       { id: 'I-03', name: 'Automation-Trigger (Connected Actions)', type: 'PROMPT' },
       { id: 'I-04', name: 'Smart Defaults & Progressive Disclosure', type: 'PROMPT' },
+    ]
+  },
+  {
+    id: 'N', title: 'MODUL-BUILDER — Custom Tabs & Felder', week: 'KW 21',
+    tasks: [
+      { id: 'N-01', name: 'Modul-Builder Backend (API F-10)', type: 'PROMPT', neu: true },
+      { id: 'N-02', name: 'Modul-Builder Frontend (Owner-Panel)', type: 'PROMPT', neu: true },
     ]
   },
   {
@@ -609,7 +639,7 @@ function build() {
         <div class="checkbox"><span class="check-icon">✓</span></div>
         <div class="task-label">
           <div class="task-id">${task.id}</div>
-          <div class="task-name">${task.name}</div>
+          <div class="task-name">${task.name}${task.neu ? '<span class="neu-badge">★ NEU</span>' : ''}</div>
           <div class="task-type">${task.type}</div>
         </div>
       `;
