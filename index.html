@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flovr — Aufbau-Checkliste</title>
+<title>Flovr v1.6 — Aufbau-Checkliste</title>
 <style>
   :root {
     --bg: #0A1A1A;
@@ -19,6 +19,7 @@
     --done-bg: #0a1a10;
     --done-text: #3a5a4a;
     --green: #4ade80;
+    --warn: #f59e0b;
     --radius: 10px;
   }
 
@@ -31,7 +32,6 @@
     min-height: 100vh;
   }
 
-  /* HEADER */
   header {
     background: linear-gradient(135deg, #062828 0%, #0A1A1A 60%);
     border-bottom: 1px solid var(--border);
@@ -68,60 +68,27 @@
     color: white;
   }
 
-  .logo h1 {
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-  }
+  .logo h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
+  .logo span { color: var(--text-dim); font-weight: 400; font-size: 14px; margin-left: 4px; }
 
-  .logo span {
-    color: var(--text-dim);
-    font-weight: 400;
-    font-size: 14px;
-    margin-left: 4px;
-  }
+  .stats { display: flex; gap: 20px; align-items: center; }
+  .stat { text-align: right; }
+  .stat-num { font-size: 22px; font-weight: 700; color: var(--pink); line-height: 1; }
+  .stat-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
 
-  .stats {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-  }
-
-  .stat {
-    text-align: right;
-  }
-
-  .stat-num {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--pink);
-    line-height: 1;
-  }
-
-  .stat-label {
+  .version-tag {
     font-size: 11px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(10,191,188,0.12);
+    color: #0ABFBC;
+    border: 1px solid rgba(10,191,188,0.25);
+    font-weight: 600;
   }
 
-  /* PROGRESS BAR */
-  .progress-wrap {
-    background: var(--border);
-    border-radius: 4px;
-    height: 6px;
-    overflow: hidden;
-  }
+  .progress-wrap { background: var(--border); border-radius: 4px; height: 6px; overflow: hidden; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, #07908E, #4DD9D7); border-radius: 4px; transition: width 0.4s ease; min-width: 2px; }
 
-  .progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, #07908E, #4DD9D7);
-    border-radius: 4px;
-    transition: width 0.4s ease;
-    min-width: 2px;
-  }
-
-  /* SECTION NAV */
   .section-nav {
     display: flex;
     gap: 4px;
@@ -132,7 +99,6 @@
     scrollbar-width: none;
     flex-wrap: wrap;
   }
-
   .section-nav::-webkit-scrollbar { display: none; }
 
   .nav-btn {
@@ -147,34 +113,13 @@
     white-space: nowrap;
     font-family: inherit;
   }
+  .nav-btn:hover { border-color: var(--purple-light); color: var(--text); }
+  .nav-btn.active { background: var(--purple); border-color: var(--purple); color: white; }
+  .nav-btn.complete { border-color: var(--green); color: var(--green); }
 
-  .nav-btn:hover {
-    border-color: var(--purple-light);
-    color: var(--text);
-  }
+  main { max-width: 860px; margin: 0 auto; padding: 32px 24px 100px; }
 
-  .nav-btn.active {
-    background: var(--purple);
-    border-color: var(--purple);
-    color: white;
-  }
-
-  .nav-btn.complete {
-    border-color: var(--green);
-    color: var(--green);
-  }
-
-  /* MAIN */
-  main {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 32px 24px 80px;
-  }
-
-  /* SECTION */
-  .section {
-    margin-bottom: 40px;
-  }
+  .section { margin-bottom: 40px; }
 
   .section-header {
     display: flex;
@@ -199,19 +144,9 @@
     flex-shrink: 0;
   }
 
-  .section-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text);
-    flex: 1;
-  }
+  .section-title { font-size: 15px; font-weight: 600; color: var(--text); flex: 1; }
+  .section-progress { font-size: 12px; color: var(--text-dim); }
 
-  .section-progress {
-    font-size: 12px;
-    color: var(--text-dim);
-  }
-
-  /* TASK ITEM */
   .task {
     display: flex;
     align-items: flex-start;
@@ -224,22 +159,10 @@
     margin-bottom: 3px;
     border: 1px solid transparent;
   }
+  .task:hover { background: var(--surface2); border-color: var(--border); }
+  .task.done { background: var(--done-bg); border-color: transparent; }
+  .task.done:hover { border-color: #2a3a2a; }
 
-  .task:hover {
-    background: var(--surface2);
-    border-color: var(--border);
-  }
-
-  .task.done {
-    background: var(--done-bg);
-    border-color: transparent;
-  }
-
-  .task.done:hover {
-    border-color: #2a3a2a;
-  }
-
-  /* CHECKBOX */
   .checkbox {
     width: 20px;
     height: 20px;
@@ -253,90 +176,55 @@
     transition: all 0.2s;
     background: transparent;
   }
+  .task:hover .checkbox { border-color: var(--purple-light); }
+  .task.done .checkbox { background: var(--green); border-color: var(--green); }
+  .check-icon { display: none; color: #0d1a0d; font-size: 12px; font-weight: 900; line-height: 1; }
+  .task.done .check-icon { display: block; }
 
-  .task:hover .checkbox {
-    border-color: var(--purple-light);
-  }
+  .task-label { flex: 1; }
+  .task-id { font-size: 11px; font-weight: 700; color: var(--purple-light); margin-bottom: 2px; font-family: 'Courier New', monospace; letter-spacing: 0.5px; }
+  .task.done .task-id { color: var(--done-text); }
+  .task-name { font-size: 14px; color: var(--text); line-height: 1.4; transition: all 0.2s; }
+  .task.done .task-name { color: var(--done-text); text-decoration: line-through; text-decoration-color: #3a5a3a; }
+  .task-type { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+  .task.done .task-type { color: #2a3a2a; }
 
-  .task.done .checkbox {
-    background: var(--green);
-    border-color: var(--green);
-  }
-
-  .check-icon {
-    display: none;
-    color: #0d1a0d;
-    font-size: 12px;
-    font-weight: 900;
-    line-height: 1;
-  }
-
-  .task.done .check-icon {
-    display: block;
-  }
-
-  /* TASK LABEL */
-  .task-label {
-    flex: 1;
-  }
-
-  .task-id {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--purple-light);
-    margin-bottom: 2px;
-    font-family: 'Courier New', monospace;
-    letter-spacing: 0.5px;
-  }
-
-  .task.done .task-id {
-    color: var(--done-text);
-  }
-
-  .task-name {
-    font-size: 14px;
-    color: var(--text);
-    line-height: 1.4;
-    transition: all 0.2s;
-  }
-
-  .task.done .task-name {
-    color: var(--done-text);
-    text-decoration: line-through;
-    text-decoration-color: #3a5a3a;
-  }
-
-  .task-type {
-    font-size: 10px;
-    color: var(--text-dim);
-    margin-top: 2px;
-  }
-
-  .task.done .task-type {
-    color: #2a3a2a;
-  }
-
-  .neu-badge {
+  .badge {
     display: inline-block;
     font-size: 9px;
     font-weight: 700;
     padding: 1px 5px;
     border-radius: 4px;
-    background: rgba(10,191,188,0.18);
-    color: #4DD9D7;
-    border: 1px solid rgba(10,191,188,0.3);
     margin-left: 6px;
     vertical-align: middle;
     letter-spacing: 0.3px;
   }
-
-  .task.done .neu-badge {
-    background: rgba(58,90,74,0.3);
-    color: #3a5a4a;
-    border-color: #2a3a2a;
+  .badge-neu {
+    background: rgba(10,191,188,0.18);
+    color: #4DD9D7;
+    border: 1px solid rgba(10,191,188,0.3);
   }
+  .badge-fix {
+    background: rgba(239,68,68,0.18);
+    color: #f87171;
+    border: 1px solid rgba(239,68,68,0.3);
+  }
+  .badge-sec {
+    background: rgba(245,158,11,0.18);
+    color: #fbbf24;
+    border: 1px solid rgba(245,158,11,0.3);
+  }
+  .task.done .badge { background: rgba(58,90,74,0.3); color: #3a5a4a; border-color: #2a3a2a; }
 
-  /* RESET BUTTON */
+  .task-note {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 3px;
+    line-height: 1.4;
+    font-style: italic;
+  }
+  .task.done .task-note { color: #2a3a2a; }
+
   .fab-group {
     position: fixed;
     bottom: 24px;
@@ -346,7 +234,6 @@
     gap: 8px;
     align-items: flex-end;
   }
-
   .fab-btn {
     padding: 10px 16px;
     border-radius: 8px;
@@ -359,7 +246,6 @@
     transition: all 0.2s;
     white-space: nowrap;
   }
-
   .fab-btn:hover { border-color: var(--purple-light); color: var(--text); }
   .fab-btn.danger:hover { border-color: #ff6b6b; color: #ff6b6b; }
   .fab-btn.primary { border-color: #0ABFBC; color: #4DD9D7; background: rgba(10,191,188,0.12); }
@@ -386,7 +272,6 @@
     100% { opacity: 0; }
   }
 
-  /* SECTION DONE NOTICE */
   .section-done {
     text-align: center;
     padding: 12px;
@@ -395,12 +280,8 @@
     opacity: 0;
     transition: opacity 0.4s;
   }
+  .section-done.visible { opacity: 1; }
 
-  .section-done.visible {
-    opacity: 1;
-  }
-
-  /* WEEK BADGE */
   .week-tag {
     font-size: 10px;
     padding: 2px 7px;
@@ -409,6 +290,15 @@
     background: rgba(10, 191, 188, 0.12);
     color: #0ABFBC;
     border: 1px solid rgba(10, 191, 188, 0.25);
+  }
+
+  .section-info {
+    font-size: 12px;
+    color: var(--text-dim);
+    padding: 8px 14px;
+    border-left: 2px solid var(--border);
+    margin-bottom: 8px;
+    line-height: 1.5;
   }
 </style>
 </head>
@@ -419,6 +309,7 @@
     <div class="logo">
       <div class="logo-dot">F</div>
       <h1>Flovr <span>Aufbau-Checkliste</span></h1>
+      <span class="version-tag">v1.6</span>
     </div>
     <div class="stats">
       <div class="stat">
@@ -437,10 +328,9 @@
 </header>
 
 <nav class="section-nav" id="section-nav"></nav>
-
 <main id="main"></main>
-
 <div class="sync-toast" id="sync-toast">Link kopiert!</div>
+
 <div class="fab-group">
   <button class="fab-btn primary" onclick="syncLink()">📋 Sync-Link kopieren</button>
   <button class="fab-btn danger" onclick="resetAll()">Zurücksetzen</button>
@@ -449,88 +339,98 @@
 <script>
 const SECTIONS = [
   {
-    id: 'A', title: 'INFRASTRUKTUR — VPS & Server-Setup', week: 'KW 18',
+    id: 'A', title: 'INFRASTRUKTUR — VPS & Server-Setup', week: '07.–09. Mai',
+    info: 'Einmalige Server-Grundlage. DU-Schritte: manuell auf VPS. PROMPT-Schritte: Claude schreibt Setup-Scripts die du dann ausführst.',
     tasks: [
-      { id: 'A-01', name: 'VPS bestellen', type: 'DU' },
-      { id: 'A-02', name: 'Erster SSH-Login & System absichern', type: 'DU' },
-      { id: 'A-03', name: 'fail2ban konfigurieren', type: 'PROMPT + DU' },
+      { id: 'A-01', name: 'VPS bestellen (Netcup VPS 500 G12)', type: 'DU' },
+      { id: 'A-02', name: 'Erster SSH-Login & System absichern', type: 'DU', sec: true, note: 'SSH Key-Only, kein Root-Login, UFW Firewall' },
+      { id: 'A-03', name: 'fail2ban konfigurieren', type: 'PROMPT + DU', note: 'SSH 5 Versuche/1h Ban, nginx Auth 10 Versuche/24h Ban' },
       { id: 'A-04', name: 'nginx + PHP 8.3 + MariaDB installieren', type: 'PROMPT + DU' },
-      { id: 'A-05', name: 'nginx Konfiguration (api + app + flovr.app)', type: 'PROMPT + DU' },
+      { id: 'A-05', name: 'nginx Konfiguration (api + app + staging)', type: 'PROMPT + DU', fix: true, note: 'BUGFIX v1.6: staging/prod getrennte Blocks, .well-known, alle 6 Security-Header' },
       { id: 'A-06', name: 'SSL-Zertifikate (Let\'s Encrypt)', type: 'DU' },
-      { id: 'A-07', name: '.env Datei anlegen', type: 'DU' },
-      { id: 'A-08', name: 'MariaDB einrichten', type: 'DU' },
-      { id: 'A-09', name: 'GitHub Actions CI/CD Pipeline', type: 'PROMPT + DU' },
+      { id: 'A-07', name: '.env Datei anlegen (/etc/flovr/.env, chmod 600)', type: 'DU', sec: true },
+      { id: 'A-08', name: 'MariaDB einrichten', type: 'DU', fix: true, note: 'BUGFIX v1.6: GRANT SELECT/INSERT/UPDATE/DELETE (nicht ALL), separater flovr_admin für Migrations, sql_mode STRICT, innodb_buffer_pool 512M' },
+      { id: 'A-09', name: 'GitHub Actions CI/CD Pipeline', type: 'PROMPT + DU', fix: true, note: 'BUGFIX v1.6: composer install nach Deploy, concurrency guard, SSH-Key-Cleanup, Host-Key-Validierung' },
       { id: 'A-10', name: 'Staging-Umgebung einrichten', type: 'PROMPT + DU' },
-      { id: 'A-11', name: 'Backup-System', type: 'PROMPT + DU' },
+      { id: 'A-11', name: 'Backup-System (täglich 03:00, lokal + Google Drive)', type: 'PROMPT + DU', fix: true, note: 'BUGFIX v1.6: .my.cnf statt -p Argument, korrekter Storage-Pfad, rclone Offsite Pflicht' },
     ]
   },
   {
-    id: 'B', title: 'DATENBANK — Schema & Migration', week: 'KW 18',
+    id: 'B', title: 'DATENBANK — Schema & Migration', week: '07.–09. Mai',
+    info: 'MariaDB Schema mit Multi-Tenant-Isolation. tenant_id in jeder Tabelle — Pflicht.',
     tasks: [
-      { id: 'B-01', name: 'Vollständiges MariaDB Schema', type: 'PROMPT' },
+      { id: 'B-01', name: 'Vollständiges MariaDB Schema (35+ Tabellen)', type: 'PROMPT', fix: true, note: 'BUGFIX v1.6: organizations statt tenants als FK-Ziel, projekte statt projects, personen_kontakt UNIQUE per tenant' },
       { id: 'B-02', name: 'Seed-Daten (Rollen + Presets)', type: 'PROMPT' },
-      { id: 'B-03', name: 'Migrations-System', type: 'PROMPT' },
+      { id: 'B-03', name: 'Migrations-System', type: 'PROMPT', fix: true, note: 'BUGFIX v1.6: Multi-Statement Split, Transaction-Wrapping, CLI-only Check, flovr_admin User' },
     ]
   },
   {
-    id: 'C', title: 'PHP BACKEND — Grundgerüst', week: 'KW 18',
+    id: 'C', title: 'PHP BACKEND — Grundgerüst', week: '07.–09. Mai',
+    info: 'Zentraler Router, CORS, Auth-Middleware. Basis für alle API-Endpunkte.',
     tasks: [
-      { id: 'C-01', name: 'Verzeichnis-Struktur + Router', type: 'PROMPT' },
-      { id: 'C-02', name: 'Auth-System (vollständig)', type: 'PROMPT' },
+      { id: 'C-01', name: 'Verzeichnis-Struktur + Router + CORS', type: 'PROMPT', sec: true, note: 'APCu-Cache für CORS-Domain-Lookup, HTTP-Methoden-Whitelist' },
+      { id: 'C-02', name: 'Auth-System (vollständig)', type: 'PROMPT', sec: true, fix: true, note: 'BUGFIX v1.6: tenant_id als "tid"-Claim im JWT PFLICHT, firebase/php-jwt ^6.10 pinnen' },
     ]
   },
   {
-    id: 'D', title: 'SECURITY HOTFIXES — Frontend', week: 'KW 19',
+    id: 'D', title: 'SECURITY HOTFIXES — Frontend', week: '07.–09. Mai',
+    info: 'Sicherheitskritische Bereinigung der KNH-App bevor sie als Flovr-App weitergebaut wird.',
     tasks: [
-      { id: 'D-01', name: 'Demo-Users, Apps Script URL, Google Fonts', type: 'PROMPT' },
-      { id: 'D-02', name: 'Git History bereinigen', type: 'DU + PROMPT' },
+      { id: 'D-01', name: 'Demo-Users entfernen, Google Fonts lokal hosten', type: 'PROMPT', sec: true, note: 'Hardcodierte Passwörter raus, kein Google CDN (DSGVO)' },
+      { id: 'D-02', name: 'Git History bereinigen (leaked Apps Script URL)', type: 'DU', sec: true, note: 'WICHTIG: CI zuerst deaktivieren → filter-repo → force push → CI reaktivieren' },
     ]
   },
   {
-    id: 'E', title: 'STORAGE — Datei-Verwaltung', week: 'KW 19',
+    id: 'E', title: 'STORAGE — Datei-Verwaltung', week: '12.–16. Mai',
+    info: 'Provider-abstrahiertes Storage System: lokal oder Google Drive, ein Interface.',
     tasks: [
-      { id: 'E-01', name: 'Storage Interface + Local Provider', type: 'PROMPT' },
-      { id: 'E-02', name: 'Upload-Endpunkte', type: 'PROMPT' },
-      { id: 'E-03', name: 'Google Drive Setup (einmalig)', type: 'DU + PROMPT' },
+      { id: 'E-01', name: 'Storage Interface + Local Provider', type: 'PROMPT', note: 'X-Accel-Redirect für sichere Dateiauslieferung via nginx' },
+      { id: 'E-02', name: 'Upload-Endpunkte', type: 'PROMPT', sec: true, note: 'finfo MIME-Validierung (nicht Content-Type), Zufalls-Dateinamen, Extension-Whitelist' },
+      { id: 'E-03', name: 'Google Drive Setup (einmalig, Service-Account)', type: 'DU + PROMPT', note: 'AVV mit Google prüfen wenn aktiviert (DSGVO Drittland-Transfer)' },
     ]
   },
   {
-    id: 'F', title: 'CORE REST API — Alle Endpunkte', week: 'KW 19',
+    id: 'F', title: 'CORE REST API — Alle Endpunkte', week: '12.–16. Mai',
+    info: 'REGEL: Jedes SELECT/UPDATE/DELETE braucht WHERE tenant_id = $auth[\'tenant_id\']. Keine Ausnahmen.',
     tasks: [
-      { id: 'F-01', name: 'Organisation & Org-Config', type: 'PROMPT' },
-      { id: 'F-02', name: 'Mitglieder-Endpunkte', type: 'PROMPT' },
+      { id: 'F-01', name: 'Organisation & Org-Config', type: 'PROMPT', note: 'Public-Endpunkt: Tenant-Zuordnung über Request-Domain (nicht Parameter!)' },
+      { id: 'F-02', name: 'Mitglieder-Endpunkte', type: 'PROMPT', sec: true },
       { id: 'F-03', name: 'Projekte-Endpunkte + Subprojekte + Budget', type: 'PROMPT', neu: true },
-      { id: 'F-04', name: 'Schichten-Endpunkte', type: 'PROMPT' },
-      { id: 'F-05', name: 'Aufgaben, Ideen, Feed', type: 'PROMPT' },
+      { id: 'F-04', name: 'Schichten-Endpunkte', type: 'PROMPT', sec: true, note: 'SELECT ... FOR UPDATE beim Einschreiben (Race-Condition-Schutz)' },
+      { id: 'F-05', name: 'Aufgaben, Ideen, Feed', type: 'PROMPT', note: 'Reactions JSON: serverseitige Größen-/Struktur-Validierung' },
       { id: 'F-06', name: 'Protokolle', type: 'PROMPT' },
       { id: 'F-07', name: 'Inventar & Archiv', type: 'PROMPT' },
-      { id: 'F-08', name: 'Admin-Endpunkte & Mitgliedsanträge', type: 'PROMPT' },
-      { id: 'F-09', name: 'Social Media Planer', type: 'PROMPT', neu: true },
+      { id: 'F-08', name: 'Admin-Endpunkte & Mitgliedsanträge', type: 'PROMPT', sec: true, note: 'Honeypot-Feld, immer gleiche Response (kein E-Mail-Enumeration)' },
+      { id: 'F-09', name: 'Social Media Planer', type: 'PROMPT', neu: true, note: 'access_token AES-256-verschlüsselt in DB speichern!' },
+      { id: 'F-10', name: 'Team-Verwaltung (Teams als Sub-Workspaces)', type: 'PROMPT', neu: true },
     ]
   },
   {
-    id: 'G', title: 'FRONTEND — API-Anbindung & UI-System', week: 'KW 20',
+    id: 'G', title: 'FRONTEND — API-Anbindung', week: '12.–16. Mai',
+    info: 'React-Frontend wird an das PHP-Backend angebunden. credentials: include bei allen Requests.',
     tasks: [
-      { id: 'G-01', name: 'API-Client & Org-Config laden', type: 'PROMPT' },
-      { id: 'G-02', name: 'Auth-Anbindung', type: 'PROMPT' },
+      { id: 'G-01', name: 'API-Client & Org-Config laden', type: 'PROMPT', note: 'credentials: "include" bei allen fetch-Calls (JWT im HttpOnly-Cookie)' },
+      { id: 'G-02', name: 'Auth-Anbindung (Login/Logout/Refresh)', type: 'PROMPT', sec: true },
       { id: 'G-03', name: 'Projekte, Schichten, Feed von API laden', type: 'PROMPT' },
       { id: 'G-04', name: 'Mitglieder, Aufgaben, Protokolle, Inventar', type: 'PROMPT' },
     ]
   },
   {
-    id: 'H', title: 'UI-QUALITÄT — Bugs & Next-Level Design', week: 'KW 20',
+    id: 'H', title: 'UI-QUALITÄT — Bugs & Design', week: '12.–23. Mai',
+    info: 'Design Tokens (CSS Custom Properties) für Tenant-Farbanpassung. Mobile-First.',
     tasks: [
       { id: 'H-01', name: 'Bekannte Bugs fixen', type: 'PROMPT' },
-      { id: 'H-02', name: 'Next-Level UI — Design System', type: 'PROMPT' },
+      { id: 'H-02', name: 'Next-Level UI — Design System + Tokens', type: 'PROMPT', note: 'CSS Custom Properties → Tenant-Farben aus org_config dynamisch anwenden' },
       { id: 'H-03', name: 'Owner-Panel (vollständig)', type: 'PROMPT' },
       { id: 'H-04', name: 'Projekt-Typen dynamisch + UI-Polish', type: 'PROMPT' },
       { id: 'H-05', name: 'Mobile-Optimierung & Performance', type: 'PROMPT' },
       { id: 'H-06', name: 'Social Media Tab — Redaktionskalender & Kanban', type: 'PROMPT', neu: true },
-      { id: 'H-07', name: 'Subprojekte & Budget im Projekt-Detail', type: 'PROMPT', neu: true },
+      { id: 'H-07', name: 'Team-Workspace — Eigenständiger Bereich pro Team', type: 'PROMPT', neu: true },
     ]
   },
   {
-    id: 'I', title: 'FLOW-SYSTEM — Templates, Trigger, Smart Defaults', week: 'KW 20',
+    id: 'I', title: 'FLOW-SYSTEM — Templates, Trigger, Smart Defaults', week: '19.–23. Mai',
+    info: 'Projekt-Templates für Abläufe innerhalb einer Org (nicht zu verwechseln mit Org-Templates in O).',
     tasks: [
       { id: 'I-01', name: 'Template-System Backend', type: 'PROMPT' },
       { id: 'I-02', name: 'Template-Auswahl im Projekt-Wizard', type: 'PROMPT' },
@@ -539,67 +439,97 @@ const SECTIONS = [
     ]
   },
   {
-    id: 'N', title: 'MODUL-BUILDER — Custom Tabs & Felder', week: 'KW 21',
+    id: 'N', title: 'MODUL-BUILDER — Custom Tabs & Felder', week: '19.–23. Mai',
+    info: 'Org-Owner kann eigene Tabs mit Custom Fields anlegen. Tenant-isoliert.',
     tasks: [
-      { id: 'N-01', name: 'Modul-Builder Backend (API F-10)', type: 'PROMPT', neu: true },
+      { id: 'N-01', name: 'Modul-Builder Backend', type: 'PROMPT', neu: true },
       { id: 'N-02', name: 'Modul-Builder Frontend (Owner-Panel)', type: 'PROMPT', neu: true },
     ]
   },
   {
-    id: 'J', title: 'DSGVO & COMPLIANCE', week: 'KW 21',
+    id: 'O', title: 'ORG-TEMPLATES — KNH als Template #1', week: '19.–23. Mai',
+    info: 'Org-Setup-Vorlagen. KNH ist Pilot und gleichzeitig das erste Community-Template.',
     tasks: [
-      { id: 'J-01', name: 'Export & Löschung', type: 'PROMPT' },
-      { id: 'J-02', name: 'DSGVO-UI im Profil', type: 'PROMPT' },
+      { id: 'O-01', name: 'Template-System Backend (org_templates Tabelle, apply-template API)', type: 'PROMPT', neu: true },
+      { id: 'O-02', name: 'KNH Kulturverein Template aus echter App extrahiert', type: 'PROMPT', neu: true, note: '10 Event-Typen, Permissions-Matrix, 15 Skills — aus knh-app extrahiert' },
+      { id: 'O-03', name: 'Onboarding-Flow mit Template-Auswahl', type: 'PROMPT', neu: true, note: 'Rate-Limit: 1 Org/IP/Tag, E-Mail-Verifikation vor Aktivierung' },
     ]
   },
   {
-    id: 'K', title: 'PRODUKTION & HARDENING', week: 'KW 21',
+    id: 'P', title: 'COMMUNITY MARKET — Template-Marktplatz', week: '26.–30. Mai',
+    info: 'Öffentlicher Template-Marktplatz mit klickbarer Live-Preview. Virales Wachstum.',
     tasks: [
-      { id: 'K-01', name: 'Security Headers + Rate Limiting', type: 'PROMPT' },
-      { id: 'K-02', name: 'Monitoring & Health', type: 'PROMPT' },
+      { id: 'P-01', name: 'Template-Registry Backend (preview_demo_token, Sandboxing)', type: 'PROMPT', neu: true, sec: true, note: 'Preview MUSS vollständig isoliert sein — keine echten Tenant-Daten' },
+      { id: 'P-02', name: 'Clickbarer Preview — Live-Demo ohne Account', type: 'PROMPT', neu: true },
+      { id: 'P-03', name: 'Market-Frontend — Entdecken & Installieren', type: 'PROMPT', neu: true },
+      { id: 'P-04', name: 'Virale Loops — KNH lädt andere Vereine ein', type: 'PROMPT', neu: true },
     ]
   },
   {
-    id: 'L', title: 'KNH-LAUNCH — Erststart & Datenmigration', week: 'KW 21',
+    id: 'J', title: 'DSGVO & COMPLIANCE', week: '19.–23. Mai',
+    info: 'Art. 17 (Löschung) + Art. 20 (Datenportabilität). 30-Tage-Cooldown vor Löschung.',
     tasks: [
-      { id: 'L-01', name: 'EasyVerein-Import', type: 'PROMPT + DU' },
-      { id: 'L-02', name: 'KNH Org-Config einrichten', type: 'DU' },
-      { id: 'L-03', name: 'Ersten Owner-Account aktivieren', type: 'DU' },
-      { id: 'L-04', name: 'IS_LIVE aktivieren', type: 'DU' },
-      { id: 'L-05', name: 'Launch-Checkliste', type: 'REVIEW' },
+      { id: 'J-01', name: 'Export & Löschung (Datenexport JSON, Anonymisierung)', type: 'PROMPT', sec: true, note: 'Dateien + Feed-Posts + avatar + user_agent müssen bei Löschung erfasst werden' },
+      { id: 'J-02', name: 'DSGVO-UI im Ich-Tab (Export-Button, Lösch-Dialog)', type: 'PROMPT' },
     ]
   },
   {
-    id: 'M', title: 'ERWEITERUNGEN — Nächste Schritte', week: 'Post-Launch',
+    id: 'K', title: 'PRODUKTION & HARDENING', week: '19.–23. Mai',
+    info: 'Security Header, Rate Limiting, Monitoring. Alle Security-Agent-Findings umgesetzt.',
     tasks: [
-      { id: 'M-01', name: 'Chat-Funktion (WebSockets)', type: 'PROMPT' },
-      { id: 'M-02', name: 'Finanz-Tool-Koop', type: 'PROMPT' },
+      { id: 'K-01', name: 'Security Headers + Rate Limiting (alle Endpunkte)', type: 'PROMPT', sec: true, note: 'audit_log: anonymisieren nach 90d, löschen nach 3 Jahren (nicht 90d)' },
+      { id: 'K-02', name: 'Monitoring & Health (public: nur {"status":"ok"})', type: 'PROMPT', note: 'Details NIEMALS im öffentlichen Health-Endpunkt — kein db/storage Status exposed' },
+    ]
+  },
+  {
+    id: 'L', title: 'KNH-LAUNCH — Ende Mai', week: '26.–30. Mai',
+    info: 'Datenmigration von EasyVerein, KNH-Config, Launch. Ziel: Ende Mai live.',
+    tasks: [
+      { id: 'L-01', name: 'EasyVerein-Import (alle KNH-Mitglieder)', type: 'PROMPT + DU' },
+      { id: 'L-02', name: 'KNH Org-Config einrichten (#5B1EAB, Inter Display)', type: 'DU' },
+      { id: 'L-03', name: 'Ersten Owner-Account (Vorstand) aktivieren', type: 'DU' },
+      { id: 'L-04', name: 'IS_LIVE = true setzen', type: 'DU' },
+      { id: 'L-05', name: 'Launch-Checkliste (35+ Tabellen, alle Sections)', type: 'REVIEW' },
+    ]
+  },
+  {
+    id: 'M', title: 'ERWEITERUNGEN — Post-Launch', week: 'ab Juni',
+    info: 'Nicht für KNH-Launch benötigt. Nach Pilot-Feedback umsetzen.',
+    tasks: [
+      { id: 'M-01', name: 'Chat-Funktion (Short-Polling → WebSocket)', type: 'PROMPT', note: 'Short-Polling: ETag/304 um DB-Last zu reduzieren' },
+      { id: 'M-02', name: 'Finanz-Tool-Koop (SEPA-Alternative)', type: 'PROMPT' },
       { id: 'M-04', name: 'Kalender-API-Anbindung', type: 'PROMPT' },
-      { id: 'M-05', name: 'Meetings & Audio-Transkription', type: 'PROMPT' },
+      { id: 'M-05', name: 'Meetings & Audio-Transkription (Anthropic API)', type: 'PROMPT', note: 'AVV mit Anthropic wenn aktiviert (DSGVO Drittland-Transfer USA)' },
     ]
   },
 ];
 
-// STATE
-const STATE_KEY = 'flovr-checklist-v1';
+const STATE_KEY = 'flovr-checklist-v2';
 
 function loadState() {
-  try { return JSON.parse(localStorage.getItem(STATE_KEY) || '{}'); }
-  catch { return {}; }
+  try {
+    // Migration von v1 auf v2
+    const v1 = localStorage.getItem('flovr-checklist-v1');
+    const v2 = localStorage.getItem(STATE_KEY);
+    if (v1 && !v2) {
+      localStorage.setItem(STATE_KEY, v1);
+      return JSON.parse(v1);
+    }
+    return JSON.parse(v2 || '{}');
+  } catch { return {}; }
 }
 
-function saveState(state) {
-  localStorage.setItem(STATE_KEY, JSON.stringify(state));
+function saveState(s) {
+  localStorage.setItem(STATE_KEY, JSON.stringify(s));
 }
 
 let state = loadState();
 
-// BUILD UI
 function build() {
   const nav = document.getElementById('section-nav');
-  const main = document.getElementById('main');
+  const mainEl = document.getElementById('main');
   nav.innerHTML = '';
-  main.innerHTML = '';
+  mainEl.innerHTML = '';
 
   let totalTasks = 0;
 
@@ -608,7 +538,6 @@ function build() {
     const done = section.tasks.filter(t => state[t.id]).length;
     const allDone = done === section.tasks.length;
 
-    // NAV BUTTON
     const btn = document.createElement('button');
     btn.className = 'nav-btn' + (allDone ? ' complete' : '');
     btn.textContent = section.id + (allDone ? ' ✓' : '');
@@ -616,7 +545,6 @@ function build() {
     btn.onclick = () => document.getElementById('sec-' + section.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
     nav.appendChild(btn);
 
-    // SECTION
     const sec = document.createElement('div');
     sec.className = 'section';
     sec.id = 'sec-' + section.id;
@@ -628,6 +556,7 @@ function build() {
         <span class="week-tag">${section.week}</span>
         <div class="section-progress">${done}/${section.tasks.length}</div>
       </div>
+      ${section.info ? `<div class="section-info">${section.info}</div>` : ''}
     `;
 
     section.tasks.forEach(task => {
@@ -635,15 +564,23 @@ function build() {
       const el = document.createElement('div');
       el.className = 'task' + (isDone ? ' done' : '');
       el.id = 'task-' + task.id;
+
+      const badges = [
+        task.neu  ? '<span class="badge badge-neu">★ NEU</span>' : '',
+        task.fix  ? '<span class="badge badge-fix">BUGFIX</span>' : '',
+        task.sec  ? '<span class="badge badge-sec">SECURITY</span>' : '',
+      ].join('');
+
       el.innerHTML = `
         <div class="checkbox"><span class="check-icon">✓</span></div>
         <div class="task-label">
           <div class="task-id">${task.id}</div>
-          <div class="task-name">${task.name}${task.neu ? '<span class="neu-badge">★ NEU</span>' : ''}</div>
+          <div class="task-name">${task.name}${badges}</div>
           <div class="task-type">${task.type}</div>
+          ${task.note ? `<div class="task-note">${task.note}</div>` : ''}
         </div>
       `;
-      el.onclick = () => toggle(task.id);
+      el.onclick = () => toggle(task.id, section);
       sec.appendChild(el);
     });
 
@@ -653,45 +590,33 @@ function build() {
     doneNotice.textContent = '✓ Sektion ' + section.id + ' abgeschlossen';
     sec.appendChild(doneNotice);
 
-    main.appendChild(sec);
+    mainEl.appendChild(sec);
   });
 
   document.getElementById('total-count').textContent = totalTasks;
   updateStats();
 }
 
-function toggle(taskId) {
+function toggle(taskId, section) {
   state[taskId] = !state[taskId];
   saveState(state);
 
   const el = document.getElementById('task-' + taskId);
-  if (state[taskId]) {
-    el.classList.add('done');
-  } else {
-    el.classList.remove('done');
-  }
+  el.classList.toggle('done', state[taskId]);
 
-  // Update section progress
-  SECTIONS.forEach(section => {
-    if (!section.tasks.find(t => t.id === taskId)) return;
-    const done = section.tasks.filter(t => state[t.id]).length;
-    const allDone = done === section.tasks.length;
+  const done = section.tasks.filter(t => state[t.id]).length;
+  const allDone = done === section.tasks.length;
+  const sec = document.getElementById('sec-' + section.id);
+  sec.querySelector('.section-progress').textContent = done + '/' + section.tasks.length;
 
-    const sec = document.getElementById('sec-' + section.id);
-    sec.querySelector('.section-progress').textContent = done + '/' + section.tasks.length;
+  const notice = document.getElementById('done-' + section.id);
+  notice.classList.toggle('visible', allDone);
 
-    const notice = document.getElementById('done-' + section.id);
-    if (allDone) notice.classList.add('visible');
-    else notice.classList.remove('visible');
-
-    // Update nav btn
-    const navBtns = document.querySelectorAll('.nav-btn');
-    navBtns.forEach(btn => {
-      if (btn.title === section.title) {
-        btn.className = 'nav-btn' + (allDone ? ' complete' : '');
-        btn.textContent = section.id + (allDone ? ' ✓' : '');
-      }
-    });
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    if (btn.title === section.title) {
+      btn.className = 'nav-btn' + (allDone ? ' complete' : '');
+      btn.textContent = section.id + (allDone ? ' ✓' : '');
+    }
   });
 
   updateStats();
@@ -713,9 +638,7 @@ function syncLink() {
     const toast = document.getElementById('sync-toast');
     toast.style.display = 'block';
     setTimeout(() => { toast.style.display = 'none'; }, 2000);
-  }).catch(() => {
-    prompt('Link kopieren:', url);
-  });
+  }).catch(() => prompt('Link kopieren:', url));
 }
 
 function loadFromHash() {
