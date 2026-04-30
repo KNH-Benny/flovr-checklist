@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flovr v1.7 — Aufbau-Checkliste</title>
+<title>Flovr v1.8 — Aufbau-Checkliste</title>
 <style>
   :root {
     --bg: #0A1A1A;
@@ -207,6 +207,30 @@
     padding: 8px 14px; border-left: 2px solid var(--border);
     margin-bottom: 8px; line-height: 1.5;
   }
+
+  .section-header {
+    cursor: pointer;
+  }
+  .section-header:hover .section-title { color: var(--purple-light); }
+
+  .section-toggle {
+    font-size: 11px; color: var(--text-dim);
+    margin-left: auto; padding-right: 4px;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .section.open .section-toggle { transform: rotate(90deg); }
+
+  .section-body {
+    display: none;
+    animation: fadeIn 0.15s ease;
+  }
+  .section.open .section-body { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 </style>
 </head>
 <body>
@@ -216,7 +240,7 @@
     <div class="logo">
       <div class="logo-dot">F</div>
       <h1>Flovr <span>Aufbau-Checkliste</span></h1>
-      <span class="version-tag">v1.7</span>
+      <span class="version-tag">v1.8</span>
     </div>
     <div class="stats">
       <div class="stat">
@@ -443,22 +467,37 @@ function build() {
     btn.className = 'nav-btn' + (allDone ? ' complete' : '');
     btn.textContent = section.id + (allDone ? ' ✓' : '');
     btn.title = section.title;
-    btn.onclick = () => document.getElementById('sec-' + section.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    btn.onclick = () => {
+      const el = document.getElementById('sec-' + section.id);
+      el.classList.add('open');
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
     nav.appendChild(btn);
 
     const sec = document.createElement('div');
     sec.className = 'section';
     sec.id = 'sec-' + section.id;
 
-    sec.innerHTML = `
-      <div class="section-header">
-        <div class="section-badge">${section.id}</div>
-        <div class="section-title">${section.title}</div>
-        <span class="week-tag">${section.week}</span>
-        <div class="section-progress">${done}/${section.tasks.length}</div>
-      </div>
-      ${section.info ? `<div class="section-info">${section.info}</div>` : ''}
+    const header = document.createElement('div');
+    header.className = 'section-header';
+    header.innerHTML = `
+      <div class="section-badge">${section.id}</div>
+      <div class="section-title">${section.title}</div>
+      <span class="week-tag">${section.week}</span>
+      <div class="section-progress" id="prog-${section.id}">${done}/${section.tasks.length}</div>
+      <span class="section-toggle">▶</span>
     `;
+    header.onclick = () => sec.classList.toggle('open');
+    sec.appendChild(header);
+
+    const body = document.createElement('div');
+    body.className = 'section-body';
+    if (section.info) {
+      const info = document.createElement('div');
+      info.className = 'section-info';
+      info.textContent = section.info;
+      body.appendChild(info);
+    }
 
     section.tasks.forEach(task => {
       const isDone = !!state[task.id];
@@ -482,14 +521,15 @@ function build() {
         </div>
       `;
       el.onclick = () => toggle(task.id, section);
-      sec.appendChild(el);
+      body.appendChild(el);
     });
 
     const doneNotice = document.createElement('div');
     doneNotice.className = 'section-done' + (allDone ? ' visible' : '');
     doneNotice.id = 'done-' + section.id;
     doneNotice.textContent = '✓ Sektion ' + section.id + ' abgeschlossen';
-    sec.appendChild(doneNotice);
+    body.appendChild(doneNotice);
+    sec.appendChild(body);
 
     mainEl.appendChild(sec);
   });
@@ -507,7 +547,7 @@ function toggle(taskId, section) {
 
   const done = section.tasks.filter(t => state[t.id]).length;
   const allDone = done === section.tasks.length;
-  document.getElementById('sec-' + section.id).querySelector('.section-progress').textContent = done + '/' + section.tasks.length;
+  document.getElementById('prog-' + section.id).textContent = done + '/' + section.tasks.length;
 
   const notice = document.getElementById('done-' + section.id);
   notice.classList.toggle('visible', allDone);
