@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flovr v1.8 — Aufbau-Checkliste</title>
+<title>Flovr v1.9 — Aufbau-Checkliste</title>
 <style>
   :root {
     --bg: #0A1A1A;
@@ -95,6 +95,11 @@
   .nav-btn:hover { border-color: var(--purple-light); color: var(--text); }
   .nav-btn.active { background: var(--purple); border-color: var(--purple); color: white; }
   .nav-btn.complete { border-color: var(--green); color: var(--green); }
+  .nav-btn.todo-btn {
+    border-color: rgba(10,191,188,0.4); color: #0ABFBC;
+    background: rgba(10,191,188,0.08); font-weight: 600;
+  }
+  .nav-btn.todo-btn:hover { background: rgba(10,191,188,0.18); }
 
   main { max-width: 860px; margin: 0 auto; padding: 32px 24px 100px; }
 
@@ -213,6 +218,20 @@
   }
   .section-header:hover .section-title { color: var(--purple-light); }
 
+  .todo-hint {
+    font-size: 10px; color: var(--purple-light);
+    cursor: pointer; padding: 1px 6px; border-radius: 4px;
+    border: 1px solid rgba(10,191,188,0.25);
+    background: rgba(10,191,188,0.06);
+    white-space: nowrap; flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .todo-hint:hover { background: rgba(10,191,188,0.18); }
+  .task.done .todo-hint { opacity: 0.3; pointer-events: none; }
+
+  .todo-overview .task-name { font-size: 13px; }
+  .todo-overview .task-id  { font-size: 10px; }
+
   .section-toggle {
     font-size: 11px; color: var(--text-dim);
     margin-left: auto; padding-right: 4px;
@@ -240,7 +259,7 @@
     <div class="logo">
       <div class="logo-dot">F</div>
       <h1>Flovr <span>Aufbau-Checkliste</span></h1>
-      <span class="version-tag">v1.8</span>
+      <span class="version-tag">v1.9</span>
     </div>
     <div class="stats">
       <div class="stat">
@@ -451,12 +470,101 @@ function saveState(s) { localStorage.setItem(STATE_KEY, JSON.stringify(s)); }
 
 let state = loadState();
 
+function buildTodoOverview(mainEl) {
+  const sec = document.createElement('div');
+  sec.className = 'section';
+  sec.id = 'sec-TODO';
+
+  const header = document.createElement('div');
+  header.className = 'section-header';
+  header.innerHTML = `
+    <div class="section-badge" style="background:linear-gradient(135deg,#0ABFBC,#4DD9D7);font-size:9px;width:32px">TODO</div>
+    <div class="section-title">ALLE OFFENEN PUNKTE — Übersicht</div>
+    <div class="section-progress" id="prog-TODO">–</div>
+    <span class="section-toggle">▶</span>
+  `;
+  header.onclick = () => sec.classList.toggle('open');
+  sec.appendChild(header);
+
+  const body = document.createElement('div');
+  body.className = 'section-body todo-overview';
+
+  SECTIONS.forEach(section => {
+    const grp = document.createElement('div');
+    grp.style.cssText = 'margin-bottom:16px';
+    grp.innerHTML = `<div style="font-size:11px;font-weight:700;color:var(--purple-light);letter-spacing:0.5px;margin:8px 0 4px;text-transform:uppercase">${section.id} · ${section.title}</div>`;
+    section.tasks.forEach(task => {
+      const isDone = !!state[task.id];
+      const el = document.createElement('div');
+      el.className = 'task' + (isDone ? ' done' : '');
+      el.id = 'todo-' + task.id;
+      el.innerHTML = `
+        <div class="checkbox"><span class="check-icon">✓</span></div>
+        <div class="task-label">
+          <div class="task-id">${task.id}</div>
+          <div class="task-name">${task.name}</div>
+        </div>
+      `;
+      el.onclick = () => {
+        toggleById(task.id, section);
+        document.getElementById('todo-' + task.id)?.classList.toggle('done', !!state[task.id]);
+      };
+      grp.appendChild(el);
+    });
+    body.appendChild(grp);
+  });
+  sec.appendChild(body);
+  mainEl.appendChild(sec);
+}
+
+function updateTodoProgress() {
+  const allTasks = SECTIONS.flatMap(s => s.tasks);
+  const done = allTasks.filter(t => state[t.id]).length;
+  const el = document.getElementById('prog-TODO');
+  if (el) el.textContent = done + '/' + allTasks.length;
+}
+
+function toggleById(taskId, section) {
+  state[taskId] = !state[taskId];
+  saveState(state);
+  const el = document.getElementById('task-' + taskId);
+  if (el) el.classList.toggle('done', state[taskId]);
+  const done = section.tasks.filter(t => state[t.id]).length;
+  const allDone = done === section.tasks.length;
+  const prog = document.getElementById('prog-' + section.id);
+  if (prog) prog.textContent = done + '/' + section.tasks.length;
+  const notice = document.getElementById('done-' + section.id);
+  if (notice) notice.classList.toggle('visible', allDone);
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    if (btn.title === section.title) {
+      btn.className = 'nav-btn' + (allDone ? ' complete' : '');
+      btn.textContent = section.id + (allDone ? ' ✓' : '');
+    }
+  });
+  updateStats();
+  updateTodoProgress();
+}
+
 function build() {
   const nav = document.getElementById('section-nav');
   const mainEl = document.getElementById('main');
   nav.innerHTML = '';
   mainEl.innerHTML = '';
   let totalTasks = 0;
+
+  // TODO Übersichts-Button ganz vorne
+  const todoBtn = document.createElement('button');
+  todoBtn.className = 'nav-btn todo-btn';
+  todoBtn.textContent = '📋 TODO';
+  todoBtn.title = 'Alle offenen Punkte';
+  todoBtn.onclick = () => {
+    const el = document.getElementById('sec-TODO');
+    el.classList.add('open');
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+  nav.appendChild(todoBtn);
+
+  buildTodoOverview(mainEl);
 
   SECTIONS.forEach(section => {
     totalTasks += section.tasks.length;
@@ -519,6 +627,7 @@ function build() {
           <div class="task-type">${task.type}</div>
           ${task.note ? `<div class="task-note">${task.note}</div>` : ''}
         </div>
+        <span class="todo-hint" title="In TODO-Übersicht anzeigen" onclick="event.stopPropagation();jumpToTodo('${task.id}')">→ TODO</span>
       `;
       el.onclick = () => toggle(task.id, section);
       body.appendChild(el);
@@ -536,6 +645,7 @@ function build() {
 
   document.getElementById('total-count').textContent = totalTasks;
   updateStats();
+  updateTodoProgress();
 }
 
 function toggle(taskId, section) {
@@ -543,14 +653,19 @@ function toggle(taskId, section) {
   saveState(state);
 
   const el = document.getElementById('task-' + taskId);
-  el.classList.toggle('done', state[taskId]);
+  if (el) el.classList.toggle('done', state[taskId]);
+
+  // auch in TODO-Übersicht synchronisieren
+  const todoEl = document.getElementById('todo-' + taskId);
+  if (todoEl) todoEl.classList.toggle('done', state[taskId]);
 
   const done = section.tasks.filter(t => state[t.id]).length;
   const allDone = done === section.tasks.length;
-  document.getElementById('prog-' + section.id).textContent = done + '/' + section.tasks.length;
+  const prog = document.getElementById('prog-' + section.id);
+  if (prog) prog.textContent = done + '/' + section.tasks.length;
 
   const notice = document.getElementById('done-' + section.id);
-  notice.classList.toggle('visible', allDone);
+  if (notice) notice.classList.toggle('visible', allDone);
 
   document.querySelectorAll('.nav-btn').forEach(btn => {
     if (btn.title === section.title) {
@@ -560,6 +675,17 @@ function toggle(taskId, section) {
   });
 
   updateStats();
+  updateTodoProgress();
+}
+
+function jumpToTodo(taskId) {
+  const sec = document.getElementById('sec-TODO');
+  sec.classList.add('open');
+  sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setTimeout(() => {
+    const el = document.getElementById('todo-' + taskId);
+    if (el) { el.style.outline = '1px solid #0ABFBC'; setTimeout(() => el.style.outline = '', 1500); }
+  }, 400);
 }
 
 function updateStats() {
