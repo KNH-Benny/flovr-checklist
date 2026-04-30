@@ -1,668 +1,329 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flovr v1.6 — Aufbau-Checkliste</title>
-<style>
-  :root {
-    --bg: #0A1A1A;
-    --surface: #0d2020;
-    --surface2: #0f2828;
-    --border: #0D3A38;
-    --purple: #07908E;
-    --purple-light: #0ABFBC;
-    --pink: #4DD9D7;
-    --pink-dim: #0ABFBC;
-    --text: #D8EFEF;
-    --text-dim: #5A8888;
-    --done-bg: #0a1a10;
-    --done-text: #3a5a4a;
-    --green: #4ade80;
-    --warn: #f59e0b;
-    --radius: 10px;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flovr Setup Checkliste</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal:    #0ABFBC;
+      --teal-d:  #07908E;
+      --teal-l:  #4DD9D7;
+      --bg:      #0A1A1A;
+      --bg2:     #0F2222;
+      --bg3:     #162E2E;
+      --border:  #1A3A3A;
+      --text:    #D8EFEF;
+      --muted:   #5A8888;
+      --done:    #2A4A4A;
+      --done-t:  #5A8A8A;
+      --red:     #FF6B6B;
+    }
 
-  body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-  }
+    html { font-size: 16px; }
 
-  header {
-    background: linear-gradient(135deg, #062828 0%, #0A1A1A 60%);
-    border-bottom: 1px solid var(--border);
-    padding: 28px 32px 24px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    backdrop-filter: blur(12px);
-  }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
 
-  .header-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-  }
+    header {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
 
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+    .header-left h1 { font-size: 1.25rem; font-weight: 700; color: var(--teal); letter-spacing: -0.02em; }
+    .header-left p  { font-size: 0.78rem; color: var(--muted); margin-top: 0.1rem; }
 
-  .logo-dot {
-    width: 32px;
-    height: 32px;
-    background: linear-gradient(135deg, #07908E, #0ABFBC);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    font-weight: 900;
-    color: white;
-  }
+    .progress-wrap { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
 
-  .logo h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
-  .logo span { color: var(--text-dim); font-weight: 400; font-size: 14px; margin-left: 4px; }
+    .progress-bar {
+      width: 140px; height: 6px;
+      background: var(--border); border-radius: 3px; overflow: hidden;
+    }
 
-  .stats { display: flex; gap: 20px; align-items: center; }
-  .stat { text-align: right; }
-  .stat-num { font-size: 22px; font-weight: 700; color: var(--pink); line-height: 1; }
-  .stat-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--teal-d), var(--teal-l));
+      border-radius: 3px; transition: width 0.3s ease; width: 0%;
+    }
 
-  .version-tag {
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 10px;
-    background: rgba(10,191,188,0.12);
-    color: #0ABFBC;
-    border: 1px solid rgba(10,191,188,0.25);
-    font-weight: 600;
-  }
+    .progress-label { font-size: 0.8rem; color: var(--teal); font-weight: 600; min-width: 3.5rem; text-align: right; }
 
-  .progress-wrap { background: var(--border); border-radius: 4px; height: 6px; overflow: hidden; }
-  .progress-bar { height: 100%; background: linear-gradient(90deg, #07908E, #4DD9D7); border-radius: 4px; transition: width 0.4s ease; min-width: 2px; }
+    main { max-width: 860px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
 
-  .section-nav {
-    display: flex;
-    gap: 4px;
-    padding: 12px 32px;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    overflow-x: auto;
-    scrollbar-width: none;
-    flex-wrap: wrap;
-  }
-  .section-nav::-webkit-scrollbar { display: none; }
+    .summary {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem; display: flex; gap: 2rem; flex-wrap: wrap;
+    }
 
-  .nav-btn {
-    padding: 5px 12px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--text-dim);
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-    font-family: inherit;
-  }
-  .nav-btn:hover { border-color: var(--purple-light); color: var(--text); }
-  .nav-btn.active { background: var(--purple); border-color: var(--purple); color: white; }
-  .nav-btn.complete { border-color: var(--green); color: var(--green); }
+    .stat { text-align: center; }
+    .stat-num  { font-size: 1.6rem; font-weight: 800; color: var(--teal); line-height: 1; }
+    .stat-label{ font-size: 0.72rem; color: var(--muted); margin-top: 0.2rem; }
 
-  main { max-width: 860px; margin: 0 auto; padding: 32px 24px 100px; }
+    .section { margin-bottom: 1.5rem; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
 
-  .section { margin-bottom: 40px; }
+    .section-header {
+      background: var(--bg2); padding: 0.75rem 1rem;
+      display: flex; align-items: center; justify-content: space-between;
+      cursor: pointer; user-select: none; gap: 0.75rem;
+    }
+    .section-header:hover { background: var(--bg3); }
 
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border);
-  }
+    .section-title { font-size: 0.9rem; font-weight: 700; color: var(--teal); }
 
-  .section-badge {
-    width: 28px;
-    height: 28px;
-    background: linear-gradient(135deg, #07908E, #0ABFBC);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: 800;
-    color: white;
-    flex-shrink: 0;
-  }
+    .section-badge {
+      font-size: 0.7rem; background: var(--bg3); border: 1px solid var(--border);
+      color: var(--muted); padding: 0.15rem 0.45rem; border-radius: 4px; font-weight: 500;
+    }
+    .section-badge.all-done { background: rgba(10,191,188,0.1); border-color: var(--teal-d); color: var(--teal); }
 
-  .section-title { font-size: 15px; font-weight: 600; color: var(--text); flex: 1; }
-  .section-progress { font-size: 12px; color: var(--text-dim); }
+    .chevron { color: var(--muted); font-size: 0.75rem; transition: transform 0.2s; flex-shrink: 0; }
+    .section.collapsed .chevron { transform: rotate(-90deg); }
+    .section-body { padding: 0.25rem 0; }
+    .section.collapsed .section-body { display: none; }
 
-  .task {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 11px 14px;
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: background 0.15s;
-    user-select: none;
-    margin-bottom: 3px;
-    border: 1px solid transparent;
-  }
-  .task:hover { background: var(--surface2); border-color: var(--border); }
-  .task.done { background: var(--done-bg); border-color: transparent; }
-  .task.done:hover { border-color: #2a3a2a; }
+    .item {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      padding: 0.55rem 1rem; border-bottom: 1px solid var(--border);
+      cursor: pointer; transition: background 0.15s;
+    }
+    .item:last-child { border-bottom: none; }
+    .item:hover      { background: var(--bg3); }
+    .item.done       { background: var(--done); }
+    .item.done:hover { background: #2e5252; }
 
-  .checkbox {
-    width: 20px;
-    height: 20px;
-    border-radius: 5px;
-    border: 2px solid var(--border);
-    flex-shrink: 0;
-    margin-top: 1px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    background: transparent;
-  }
-  .task:hover .checkbox { border-color: var(--purple-light); }
-  .task.done .checkbox { background: var(--green); border-color: var(--green); }
-  .check-icon { display: none; color: #0d1a0d; font-size: 12px; font-weight: 900; line-height: 1; }
-  .task.done .check-icon { display: block; }
+    .cb {
+      width: 18px; height: 18px; flex-shrink: 0;
+      border: 2px solid var(--border); border-radius: 4px; margin-top: 0.15rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s; background: var(--bg2);
+    }
+    .item.done .cb { background: var(--teal); border-color: var(--teal); }
+    .cb-check { display: none; color: var(--bg); font-size: 11px; font-weight: 900; line-height: 1; }
+    .item.done .cb-check { display: block; }
 
-  .task-label { flex: 1; }
-  .task-id { font-size: 11px; font-weight: 700; color: var(--purple-light); margin-bottom: 2px; font-family: 'Courier New', monospace; letter-spacing: 0.5px; }
-  .task.done .task-id { color: var(--done-text); }
-  .task-name { font-size: 14px; color: var(--text); line-height: 1.4; transition: all 0.2s; }
-  .task.done .task-name { color: var(--done-text); text-decoration: line-through; text-decoration-color: #3a5a3a; }
-  .task-type { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
-  .task.done .task-type { color: #2a3a2a; }
+    .item-content { flex: 1; min-width: 0; }
+    .item-id   { font-size: 0.7rem; font-weight: 700; color: var(--teal-d); margin-bottom: 0.05rem; font-family: 'SF Mono','Fira Code',monospace; }
+    .item-text { font-size: 0.875rem; color: var(--text); line-height: 1.4; }
+    .item.done .item-text { color: var(--done-t); text-decoration: line-through; text-decoration-color: var(--done-t); }
+    .item-note { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; font-style: italic; }
 
-  .badge {
-    display: inline-block;
-    font-size: 9px;
-    font-weight: 700;
-    padding: 1px 5px;
-    border-radius: 4px;
-    margin-left: 6px;
-    vertical-align: middle;
-    letter-spacing: 0.3px;
-  }
-  .badge-neu {
-    background: rgba(10,191,188,0.18);
-    color: #4DD9D7;
-    border: 1px solid rgba(10,191,188,0.3);
-  }
-  .badge-fix {
-    background: rgba(239,68,68,0.18);
-    color: #f87171;
-    border: 1px solid rgba(239,68,68,0.3);
-  }
-  .badge-sec {
-    background: rgba(245,158,11,0.18);
-    color: #fbbf24;
-    border: 1px solid rgba(245,158,11,0.3);
-  }
-  .task.done .badge { background: rgba(58,90,74,0.3); color: #3a5a4a; border-color: #2a3a2a; }
+    .reset-btn {
+      display: block; margin: 2rem auto 0; padding: 0.5rem 1.25rem;
+      background: transparent; border: 1px solid var(--border); color: var(--muted);
+      border-radius: 6px; font-size: 0.8rem; cursor: pointer; transition: all 0.15s;
+    }
+    .reset-btn:hover { border-color: var(--red); color: var(--red); }
 
-  .task-note {
-    font-size: 11px;
-    color: var(--text-dim);
-    margin-top: 3px;
-    line-height: 1.4;
-    font-style: italic;
-  }
-  .task.done .task-note { color: #2a3a2a; }
-
-  .fab-group {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    align-items: flex-end;
-  }
-  .fab-btn {
-    padding: 10px 16px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--surface2);
-    color: var(--text-dim);
-    font-size: 12px;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  .fab-btn:hover { border-color: var(--purple-light); color: var(--text); }
-  .fab-btn.danger:hover { border-color: #ff6b6b; color: #ff6b6b; }
-  .fab-btn.primary { border-color: #0ABFBC; color: #4DD9D7; background: rgba(10,191,188,0.12); }
-  .fab-btn.primary:hover { background: rgba(10,191,188,0.25); }
-
-  .sync-toast {
-    position: fixed;
-    bottom: 140px;
-    right: 24px;
-    background: var(--green);
-    color: #0d1a0d;
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    display: none;
-    animation: fadeInOut 2s ease forwards;
-  }
-
-  @keyframes fadeInOut {
-    0% { opacity: 0; transform: translateY(8px); }
-    20% { opacity: 1; transform: translateY(0); }
-    80% { opacity: 1; }
-    100% { opacity: 0; }
-  }
-
-  .section-done {
-    text-align: center;
-    padding: 12px;
-    color: var(--green);
-    font-size: 13px;
-    opacity: 0;
-    transition: opacity 0.4s;
-  }
-  .section-done.visible { opacity: 1; }
-
-  .week-tag {
-    font-size: 10px;
-    padding: 2px 7px;
-    border-radius: 10px;
-    font-weight: 600;
-    background: rgba(10, 191, 188, 0.12);
-    color: #0ABFBC;
-    border: 1px solid rgba(10, 191, 188, 0.25);
-  }
-
-  .section-info {
-    font-size: 12px;
-    color: var(--text-dim);
-    padding: 8px 14px;
-    border-left: 2px solid var(--border);
-    margin-bottom: 8px;
-    line-height: 1.5;
-  }
-</style>
+    @media (max-width: 480px) {
+      header { padding: 1rem; }
+      .progress-bar { width: 100px; }
+      main { padding: 1rem 0.75rem 3rem; }
+      .item { padding: 0.55rem 0.75rem; }
+      .section-header { padding: 0.65rem 0.75rem; }
+      .summary { gap: 1.25rem; }
+    }
+  </style>
 </head>
 <body>
 
 <header>
-  <div class="header-top">
-    <div class="logo">
-      <div class="logo-dot">F</div>
-      <h1>Flovr <span>Aufbau-Checkliste</span></h1>
-      <span class="version-tag">v1.6</span>
-    </div>
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-num" id="done-count">0</div>
-        <div class="stat-label">Erledigt</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num" id="total-count">0</div>
-        <div class="stat-label">Gesamt</div>
-      </div>
-    </div>
+  <div class="header-left">
+    <h1>Flovr Setup Checkliste</h1>
+    <p>Von Null bis Production</p>
   </div>
   <div class="progress-wrap">
-    <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">0%</div>
   </div>
 </header>
 
-<nav class="section-nav" id="section-nav"></nav>
-<main id="main"></main>
-<div class="sync-toast" id="sync-toast">Link kopiert!</div>
-
-<div class="fab-group">
-  <button class="fab-btn primary" onclick="syncLink()">📋 Sync-Link kopieren</button>
-  <button class="fab-btn danger" onclick="resetAll()">Zurücksetzen</button>
-</div>
+<main>
+  <div class="summary">
+    <div class="stat"><div class="stat-num" id="statDone">0</div><div class="stat-label">erledigt</div></div>
+    <div class="stat"><div class="stat-num" id="statOpen">0</div><div class="stat-label">offen</div></div>
+    <div class="stat"><div class="stat-num" id="statTotal">0</div><div class="stat-label">gesamt</div></div>
+  </div>
+  <div id="app"></div>
+  <button class="reset-btn" onclick="resetAll()">Alle Haken zurücksetzen</button>
+</main>
 
 <script>
 const SECTIONS = [
-  {
-    id: 'A', title: 'INFRASTRUKTUR — VPS & Server-Setup', week: '07.–09. Mai',
-    info: 'Einmalige Server-Grundlage. DU-Schritte: manuell auf VPS. PROMPT-Schritte: Claude schreibt Setup-Scripts die du dann ausführst.',
-    tasks: [
-      { id: 'A-01', name: 'VPS bestellen (Netcup VPS 500 G12)', type: 'DU' },
-      { id: 'A-02', name: 'Erster SSH-Login & System absichern', type: 'DU', sec: true, note: 'SSH Key-Only, kein Root-Login, UFW Firewall' },
-      { id: 'A-03', name: 'fail2ban konfigurieren', type: 'PROMPT + DU', note: 'SSH 5 Versuche/1h Ban, nginx Auth 10 Versuche/24h Ban' },
-      { id: 'A-04', name: 'nginx + PHP 8.3 + MariaDB installieren', type: 'PROMPT + DU' },
-      { id: 'A-05', name: 'nginx Konfiguration (api + app + staging)', type: 'PROMPT + DU', fix: true, note: 'BUGFIX v1.6: staging/prod getrennte Blocks, .well-known, alle 6 Security-Header' },
-      { id: 'A-06', name: 'SSL-Zertifikate (Let\'s Encrypt)', type: 'DU' },
-      { id: 'A-07', name: '.env Datei anlegen (/etc/flovr/.env, chmod 600)', type: 'DU', sec: true },
-      { id: 'A-08', name: 'MariaDB einrichten', type: 'DU', fix: true, note: 'BUGFIX v1.6: GRANT SELECT/INSERT/UPDATE/DELETE (nicht ALL), separater flovr_admin für Migrations, sql_mode STRICT, innodb_buffer_pool 512M' },
-      { id: 'A-09', name: 'GitHub Actions CI/CD Pipeline', type: 'PROMPT + DU', fix: true, note: 'BUGFIX v1.6: composer install nach Deploy, concurrency guard, SSH-Key-Cleanup, Host-Key-Validierung' },
-      { id: 'A-10', name: 'Staging-Umgebung einrichten', type: 'PROMPT + DU' },
-      { id: 'A-11', name: 'Backup-System (täglich 03:00, lokal + Google Drive)', type: 'PROMPT + DU', fix: true, note: 'BUGFIX v1.6: .my.cnf statt -p Argument, korrekter Storage-Pfad, rclone Offsite Pflicht' },
-    ]
-  },
-  {
-    id: 'B', title: 'DATENBANK — Schema & Migration', week: '07.–09. Mai',
-    info: 'MariaDB Schema mit Multi-Tenant-Isolation. tenant_id in jeder Tabelle — Pflicht.',
-    tasks: [
-      { id: 'B-01', name: 'Vollständiges MariaDB Schema (35+ Tabellen)', type: 'PROMPT', fix: true, note: 'BUGFIX v1.6: organizations statt tenants als FK-Ziel, projekte statt projects, personen_kontakt UNIQUE per tenant' },
-      { id: 'B-02', name: 'Seed-Daten (Rollen + Presets)', type: 'PROMPT' },
-      { id: 'B-03', name: 'Migrations-System', type: 'PROMPT', fix: true, note: 'BUGFIX v1.6: Multi-Statement Split, Transaction-Wrapping, CLI-only Check, flovr_admin User' },
-    ]
-  },
-  {
-    id: 'C', title: 'PHP BACKEND — Grundgerüst', week: '07.–09. Mai',
-    info: 'Zentraler Router, CORS, Auth-Middleware. Basis für alle API-Endpunkte.',
-    tasks: [
-      { id: 'C-01', name: 'Verzeichnis-Struktur + Router + CORS', type: 'PROMPT', sec: true, note: 'APCu-Cache für CORS-Domain-Lookup, HTTP-Methoden-Whitelist' },
-      { id: 'C-02', name: 'Auth-System (vollständig)', type: 'PROMPT', sec: true, fix: true, note: 'BUGFIX v1.6: tenant_id als "tid"-Claim im JWT PFLICHT, firebase/php-jwt ^6.10 pinnen' },
-    ]
-  },
-  {
-    id: 'D', title: 'SECURITY HOTFIXES — Frontend', week: '07.–09. Mai',
-    info: 'Sicherheitskritische Bereinigung der KNH-App bevor sie als Flovr-App weitergebaut wird.',
-    tasks: [
-      { id: 'D-01', name: 'Demo-Users entfernen, Google Fonts lokal hosten', type: 'PROMPT', sec: true, note: 'Hardcodierte Passwörter raus, kein Google CDN (DSGVO)' },
-      { id: 'D-02', name: 'Git History bereinigen (leaked Apps Script URL)', type: 'DU', sec: true, note: 'WICHTIG: CI zuerst deaktivieren → filter-repo → force push → CI reaktivieren' },
-    ]
-  },
-  {
-    id: 'E', title: 'STORAGE — Datei-Verwaltung', week: '12.–16. Mai',
-    info: 'Provider-abstrahiertes Storage System: lokal oder Google Drive, ein Interface.',
-    tasks: [
-      { id: 'E-01', name: 'Storage Interface + Local Provider', type: 'PROMPT', note: 'X-Accel-Redirect für sichere Dateiauslieferung via nginx' },
-      { id: 'E-02', name: 'Upload-Endpunkte', type: 'PROMPT', sec: true, note: 'finfo MIME-Validierung (nicht Content-Type), Zufalls-Dateinamen, Extension-Whitelist' },
-      { id: 'E-03', name: 'Google Drive Setup (einmalig, Service-Account)', type: 'DU + PROMPT', note: 'AVV mit Google prüfen wenn aktiviert (DSGVO Drittland-Transfer)' },
-    ]
-  },
-  {
-    id: 'F', title: 'CORE REST API — Alle Endpunkte', week: '12.–16. Mai',
-    info: 'REGEL: Jedes SELECT/UPDATE/DELETE braucht WHERE tenant_id = $auth[\'tenant_id\']. Keine Ausnahmen.',
-    tasks: [
-      { id: 'F-01', name: 'Organisation & Org-Config', type: 'PROMPT', note: 'Public-Endpunkt: Tenant-Zuordnung über Request-Domain (nicht Parameter!)' },
-      { id: 'F-02', name: 'Mitglieder-Endpunkte', type: 'PROMPT', sec: true },
-      { id: 'F-03', name: 'Projekte-Endpunkte + Subprojekte + Budget', type: 'PROMPT', neu: true },
-      { id: 'F-04', name: 'Schichten-Endpunkte', type: 'PROMPT', sec: true, note: 'SELECT ... FOR UPDATE beim Einschreiben (Race-Condition-Schutz)' },
-      { id: 'F-05', name: 'Aufgaben, Ideen, Feed', type: 'PROMPT', note: 'Reactions JSON: serverseitige Größen-/Struktur-Validierung' },
-      { id: 'F-06', name: 'Protokolle', type: 'PROMPT' },
-      { id: 'F-07', name: 'Inventar & Archiv', type: 'PROMPT' },
-      { id: 'F-08', name: 'Admin-Endpunkte & Mitgliedsanträge', type: 'PROMPT', sec: true, note: 'Honeypot-Feld, immer gleiche Response (kein E-Mail-Enumeration)' },
-      { id: 'F-09', name: 'Social Media Planer', type: 'PROMPT', neu: true, note: 'access_token AES-256-verschlüsselt in DB speichern!' },
-      { id: 'F-10', name: 'Team-Verwaltung (Teams als Sub-Workspaces)', type: 'PROMPT', neu: true },
-    ]
-  },
-  {
-    id: 'G', title: 'FRONTEND — API-Anbindung', week: '12.–16. Mai',
-    info: 'React-Frontend wird an das PHP-Backend angebunden. credentials: include bei allen Requests.',
-    tasks: [
-      { id: 'G-01', name: 'API-Client & Org-Config laden', type: 'PROMPT', note: 'credentials: "include" bei allen fetch-Calls (JWT im HttpOnly-Cookie)' },
-      { id: 'G-02', name: 'Auth-Anbindung (Login/Logout/Refresh)', type: 'PROMPT', sec: true },
-      { id: 'G-03', name: 'Projekte, Schichten, Feed von API laden', type: 'PROMPT' },
-      { id: 'G-04', name: 'Mitglieder, Aufgaben, Protokolle, Inventar', type: 'PROMPT' },
-    ]
-  },
-  {
-    id: 'H', title: 'UI-QUALITÄT — Bugs & Design', week: '12.–23. Mai',
-    info: 'Design Tokens (CSS Custom Properties) für Tenant-Farbanpassung. Mobile-First.',
-    tasks: [
-      { id: 'H-01', name: 'Bekannte Bugs fixen', type: 'PROMPT' },
-      { id: 'H-02', name: 'Next-Level UI — Design System + Tokens', type: 'PROMPT', note: 'CSS Custom Properties → Tenant-Farben aus org_config dynamisch anwenden' },
-      { id: 'H-03', name: 'Owner-Panel (vollständig)', type: 'PROMPT' },
-      { id: 'H-04', name: 'Projekt-Typen dynamisch + UI-Polish', type: 'PROMPT' },
-      { id: 'H-05', name: 'Mobile-Optimierung & Performance', type: 'PROMPT' },
-      { id: 'H-06', name: 'Social Media Tab — Redaktionskalender & Kanban', type: 'PROMPT', neu: true },
-      { id: 'H-07', name: 'Team-Workspace — Eigenständiger Bereich pro Team', type: 'PROMPT', neu: true },
-    ]
-  },
-  {
-    id: 'I', title: 'FLOW-SYSTEM — Templates, Trigger, Smart Defaults', week: '19.–23. Mai',
-    info: 'Projekt-Templates für Abläufe innerhalb einer Org (nicht zu verwechseln mit Org-Templates in O).',
-    tasks: [
-      { id: 'I-01', name: 'Template-System Backend', type: 'PROMPT' },
-      { id: 'I-02', name: 'Template-Auswahl im Projekt-Wizard', type: 'PROMPT' },
-      { id: 'I-03', name: 'Automation-Trigger (Connected Actions)', type: 'PROMPT' },
-      { id: 'I-04', name: 'Smart Defaults & Progressive Disclosure', type: 'PROMPT' },
-    ]
-  },
-  {
-    id: 'N', title: 'MODUL-BUILDER — Custom Tabs & Felder', week: '19.–23. Mai',
-    info: 'Org-Owner kann eigene Tabs mit Custom Fields anlegen. Tenant-isoliert.',
-    tasks: [
-      { id: 'N-01', name: 'Modul-Builder Backend', type: 'PROMPT', neu: true },
-      { id: 'N-02', name: 'Modul-Builder Frontend (Owner-Panel)', type: 'PROMPT', neu: true },
-    ]
-  },
-  {
-    id: 'O', title: 'ORG-TEMPLATES — KNH als Template #1', week: '19.–23. Mai',
-    info: 'Org-Setup-Vorlagen. KNH ist Pilot und gleichzeitig das erste Community-Template.',
-    tasks: [
-      { id: 'O-01', name: 'Template-System Backend (org_templates Tabelle, apply-template API)', type: 'PROMPT', neu: true },
-      { id: 'O-02', name: 'KNH Kulturverein Template aus echter App extrahiert', type: 'PROMPT', neu: true, note: '10 Event-Typen, Permissions-Matrix, 15 Skills — aus knh-app extrahiert' },
-      { id: 'O-03', name: 'Onboarding-Flow mit Template-Auswahl', type: 'PROMPT', neu: true, note: 'Rate-Limit: 1 Org/IP/Tag, E-Mail-Verifikation vor Aktivierung' },
-    ]
-  },
-  {
-    id: 'P', title: 'COMMUNITY MARKET — Template-Marktplatz', week: '26.–30. Mai',
-    info: 'Öffentlicher Template-Marktplatz mit klickbarer Live-Preview. Virales Wachstum.',
-    tasks: [
-      { id: 'P-01', name: 'Template-Registry Backend (preview_demo_token, Sandboxing)', type: 'PROMPT', neu: true, sec: true, note: 'Preview MUSS vollständig isoliert sein — keine echten Tenant-Daten' },
-      { id: 'P-02', name: 'Clickbarer Preview — Live-Demo ohne Account', type: 'PROMPT', neu: true },
-      { id: 'P-03', name: 'Market-Frontend — Entdecken & Installieren', type: 'PROMPT', neu: true },
-      { id: 'P-04', name: 'Virale Loops — KNH lädt andere Vereine ein', type: 'PROMPT', neu: true },
-    ]
-  },
-  {
-    id: 'J', title: 'DSGVO & COMPLIANCE', week: '19.–23. Mai',
-    info: 'Art. 17 (Löschung) + Art. 20 (Datenportabilität). 30-Tage-Cooldown vor Löschung.',
-    tasks: [
-      { id: 'J-01', name: 'Export & Löschung (Datenexport JSON, Anonymisierung)', type: 'PROMPT', sec: true, note: 'Dateien + Feed-Posts + avatar + user_agent müssen bei Löschung erfasst werden' },
-      { id: 'J-02', name: 'DSGVO-UI im Ich-Tab (Export-Button, Lösch-Dialog)', type: 'PROMPT' },
-    ]
-  },
-  {
-    id: 'K', title: 'PRODUKTION & HARDENING', week: '19.–23. Mai',
-    info: 'Security Header, Rate Limiting, Monitoring. Alle Security-Agent-Findings umgesetzt.',
-    tasks: [
-      { id: 'K-01', name: 'Security Headers + Rate Limiting (alle Endpunkte)', type: 'PROMPT', sec: true, note: 'audit_log: anonymisieren nach 90d, löschen nach 3 Jahren (nicht 90d)' },
-      { id: 'K-02', name: 'Monitoring & Health (public: nur {"status":"ok"})', type: 'PROMPT', note: 'Details NIEMALS im öffentlichen Health-Endpunkt — kein db/storage Status exposed' },
-    ]
-  },
-  {
-    id: 'L', title: 'KNH-LAUNCH — Ende Mai', week: '26.–30. Mai',
-    info: 'Datenmigration von EasyVerein, KNH-Config, Launch. Ziel: Ende Mai live.',
-    tasks: [
-      { id: 'L-01', name: 'EasyVerein-Import (alle KNH-Mitglieder)', type: 'PROMPT + DU' },
-      { id: 'L-02', name: 'KNH Org-Config einrichten (#5B1EAB, Inter Display)', type: 'DU' },
-      { id: 'L-03', name: 'Ersten Owner-Account (Vorstand) aktivieren', type: 'DU' },
-      { id: 'L-04', name: 'IS_LIVE = true setzen', type: 'DU' },
-      { id: 'L-05', name: 'Launch-Checkliste (35+ Tabellen, alle Sections)', type: 'REVIEW' },
-    ]
-  },
-  {
-    id: 'M', title: 'ERWEITERUNGEN — Post-Launch', week: 'ab Juni',
-    info: 'Nicht für KNH-Launch benötigt. Nach Pilot-Feedback umsetzen.',
-    tasks: [
-      { id: 'M-01', name: 'Chat-Funktion (Short-Polling → WebSocket)', type: 'PROMPT', note: 'Short-Polling: ETag/304 um DB-Last zu reduzieren' },
-      { id: 'M-02', name: 'Finanz-Tool-Koop (SEPA-Alternative)', type: 'PROMPT' },
-      { id: 'M-04', name: 'Kalender-API-Anbindung', type: 'PROMPT' },
-      { id: 'M-05', name: 'Meetings & Audio-Transkription (Anthropic API)', type: 'PROMPT', note: 'AVV mit Anthropic wenn aktiviert (DSGVO Drittland-Transfer USA)' },
-    ]
-  },
+  { id:'A', title:'A · Infrastruktur — VPS & Server-Setup', items:[
+    { id:'A-01',  text:'VPS bestellen',                                          note:'netcup VPS 500 G12' },
+    { id:'A-02',  text:'Erster SSH-Login & System absichern',                    note:'Key-Auth, Root-Login deaktivieren, UFW einrichten' },
+    { id:'A-03',  text:'fail2ban konfigurieren',                                 note:'bash backend/setup/fail2ban_install.sh' },
+    { id:'A-04',  text:'nginx + PHP 8.3 + MariaDB installieren',                 note:'sudo bash backend/setup/server_install.sh' },
+    { id:'A-05',  text:'nginx vHost-Configs aktivieren',                         note:'api.flovr.de, app.flovr.de, flovr.de' },
+    { id:'A-06',  text:'SSL-Zertifikate ausstellen',                             note:'certbot --nginx -d api.flovr.de -d app.flovr.de -d flovr.de' },
+    { id:'A-07',  text:'/etc/flovr/.env anlegen + alle CHANGE_ME befüllen',      note:'DB_PASS, JWT_SECRET, APP_KEY' },
+    { id:'A-08',  text:'MariaDB einrichten',                                     note:'flovr_db anlegen, flovr_user erstellen, Rechte vergeben' },
+    { id:'A-09a', text:'GitHub Actions CI/CD Pipeline testen',                   note:'Push auf main → GitHub Actions Tab → Deploy-Job prüfen' },
+    { id:'A-09b', text:'TODO C-01 in deploy.yml: Health-Check einkommentieren',  note:'Erst nach Backend-Setup (C-02) aktivieren' },
+    { id:'A-10a', text:'Staging-Umgebung auf VPS einrichten',                    note:'sudo bash backend/setup/staging_setup.sh' },
+    { id:'A-10b', text:'Staging SSL-Zertifikat ausstellen',                      note:'certbot --nginx -d api-staging.flovr.de -d app-staging.flovr.de' },
+    { id:'A-10c', text:'GitHub Environment "production" mit Required Reviewer',  note:'Erst relevant wenn zweiter Deployer dazu kommt — GitHub → Settings → Environments → production → Required reviewers' },
+    { id:'A-11a', text:'Block Storage /dev/vdb formatieren + als /mnt/backup mounten', note:'mkfs.ext4 /dev/vdb → /etc/fstab eintragen → df -h /mnt/backup prüft 100G' },
+    { id:'A-11b', text:'Backup-System installieren',                             note:'git pull && bash backend/setup/backup/backup_install.sh' },
+    { id:'A-11c', text:'Backup manuell testen',                                  note:'bash /usr/local/bin/flovr-backup.sh → ls -lh /mnt/backup/flovr/' },
+  ]},
+  { id:'B', title:'B · Datenbank — Schema & Migration', items:[
+    { id:'B-01', text:'Vollständiges MariaDB-Schema ausführen',  note:'28 Tabellen, Multi-Tenant, utf8mb4, AES-256 für DSGVO-Felder' },
+    { id:'B-02', text:'Seed-Daten einspielen',                   note:'Rollen + Presets' },
+    { id:'B-03', text:'Migrations-System einrichten',            note:'Inkrementelle SQL-Migrations, nur neue laufen' },
+  ]},
+  { id:'C', title:'C · Backend — PHP Router & Auth', items:[
+    { id:'C-01', text:'Verzeichnis-Struktur + Router implementieren', note:'backend/public/index.php, Middleware-Chain, Front-Controller' },
+    { id:'C-02', text:'Auth-System vollständig',                      note:'Login, JWT, Refresh-Token, Logout, /api/auth/me' },
+  ]},
+  { id:'D', title:'D · Security — Bereinigung', items:[
+    { id:'D-01', text:'Demo-Users entfernen, Apps Script URL aus Code, Google Fonts lokal', note:'Keine Hardcoded-Credentials, keine externe Fontquelle' },
+    { id:'D-02', text:'Git History bereinigen',                                              note:'Falls Secrets committed wurden: BFG Repo-Cleaner + force-push' },
+  ]},
+  { id:'E', title:'E · Storage — Uploads', items:[
+    { id:'E-01', text:'StorageInterface + Local Provider implementieren', note:'Interface-Pattern für späteren gdrive/S3-Wechsel' },
+    { id:'E-02', text:'Upload-Endpunkte',                                 note:'Avatar, Dokumente — mit X-Accel-Redirect für sichere Downloads' },
+    { id:'E-03', text:'Google Drive Setup (optional)',                    note:'Nur wenn gdrive als Storage-Provider gewählt wird' },
+  ]},
+  { id:'F', title:'F · API — 55 REST-Endpunkte', items:[
+    { id:'F-01', text:'Organisation & Org-Config',           note:'GET/PUT /api/org, Tenant-Setup' },
+    { id:'F-02', text:'Mitglieder-Endpunkte',                note:'CRUD, Rollen, Status, Suche' },
+    { id:'F-03', text:'Projekte-Endpunkte',                  note:'CRUD, Typen, Mitglieder-Zuweisung' },
+    { id:'F-04', text:'Schichten-Endpunkte',                 note:'Planung, Buchung, Bestätigung, Konflikt-Check' },
+    { id:'F-05', text:'Aufgaben, Ideen, Feed',               note:'Aufgaben-Board, Ideen-Voting, Activity-Feed' },
+    { id:'F-06', text:'Protokolle',                          note:'Erstellen, Unterzeichnen, PDF-Export' },
+    { id:'F-07', text:'Inventar & Archiv',                   note:'CRUD Inventar, Archiv-Endpunkte' },
+    { id:'F-08', text:'Admin-Endpunkte & Mitgliedsanträge',  note:'Antrags-Workflow, Genehmigung, Ablehnung' },
+    { id:'F-09', text:'Social Media Planer',                 note:'Posts planen, Status, Kanal-Verwaltung' },
+    { id:'F-10', text:'Team-Verwaltung',                     note:'Teams, Rollen, Mitglieder-Zuweisung' },
+  ]},
+  { id:'G', title:'G · Frontend — API-Anbindung', items:[
+    { id:'G-01', text:'API-Client + Org-Config laden',                        note:'CFG-Platzhalter ersetzen, fetch-Wrapper' },
+    { id:'G-02', text:'Auth-Anbindung',                                       note:'Login, Logout, Token-Refresh, Auth-Guard' },
+    { id:'G-03', text:'Projekte, Schichten, Feed von API laden',              note:'React-Hooks, Loading-States, Error-Handling' },
+    { id:'G-04', text:'Mitglieder, Aufgaben, Protokolle, Inventar',           note:'Alle verbleibenden Tabs an API anbinden' },
+  ]},
+  { id:'H', title:'H · UI — Bug-Fixes & Design System', items:[
+    { id:'H-01', text:'10 bekannte Bugs fixen',                      note:'Dokumentierte Bugs aus Testsession' },
+    { id:'H-02', text:'Next-Level UI — Design System',               note:'Tokens, Komponenten-Library, konsistentes Styling' },
+    { id:'H-03', text:'Owner-Panel vollständig',                     note:'Org-Config, Mitgliederverwaltung, Rollen, Einladungen' },
+    { id:'H-04', text:'Projekt-Typen dynamisch + UI-Polish',         note:'Dynamische Typen aus Org-Config, Animations' },
+    { id:'H-05', text:'Mobile-Optimierung & Performance',            note:'Core Web Vitals, Touch-Gesten, PWA-Manifest' },
+    { id:'H-06', text:'Social Media Tab — Redaktionskalender',       note:'Drag & Drop, Kanal-Icons, Preview' },
+    { id:'H-07', text:'Team-Workspace — Eigenständiger Bereich',     note:'Team-Feed, Team-Aufgaben, Team-Kalender' },
+  ]},
+  { id:'I', title:'I · KI — Claude API Integration', items:[
+    { id:'I-01', text:'Template-System Backend',                   note:'Claude API für Inhalts-Templates' },
+    { id:'I-02', text:'Template-Auswahl im Projekt-Wizard',        note:'KI-generierte Vorschläge beim Projekt erstellen' },
+    { id:'I-03', text:'Automation-Trigger (Connected Actions)',    note:'Wenn X → KI macht Y' },
+    { id:'I-04', text:'Smart Defaults & Progressive Disclosure',   note:'KI füllt Felder vor, blendet Komplexität aus' },
+  ]},
+  { id:'J', title:'J · DSGVO — Export & Löschung', items:[
+    { id:'J-01', text:'Export & Löschung Backend', note:'Art. 17 Löschrecht, Art. 20 Datenportabilität — JSON-Export' },
+    { id:'J-02', text:'DSGVO-UI im Profil',        note:'Daten-Export-Button, Konto löschen, Einwilligungen verwalten' },
+  ]},
+  { id:'K', title:'K · Betrieb — Monitoring & Crons', items:[
+    { id:'K-01', text:'Security Headers + Rate Limiting', note:'CSP, HSTS, X-Frame, Rate-Limiting für alle API-Endpunkte' },
+    { id:'K-02', text:'Monitoring & Health',               note:'Uptime-Check, Disk-Alarm bei >85%, DB-Check, /api/health' },
+  ]},
+  { id:'L', title:'L · Launch — KNH-Setup & Checkliste', items:[
+    { id:'L-01', text:'EasyVerein-Import',                    note:'Mitglieder aus EasyVerein in flovr_db importieren' },
+    { id:'L-02', text:'KNH Org-Config einrichten',            note:'Name, Logo, Farben, Rollen, Abteilungen' },
+    { id:'L-03', text:'Ersten Owner-Account aktivieren',      note:'Account verifizieren, Org-Admin-Rolle setzen' },
+    { id:'L-04', text:'IS_LIVE=true in .env setzen',          note:'Schaltet Registrierung frei, deaktiviert Debug-Mode' },
+    { id:'L-05', text:'Launch-Checkliste vollständig',        note:'Alle L-05 Checkpunkte durchgehen' },
+  ]},
+  { id:'M', title:'M · Zukunft — Vision', items:[
+    { id:'M-01', text:'Chat-Funktion (WebSockets)',            note:'Echtzeit-Nachrichten, Gruppen-Channels' },
+    { id:'M-02', text:'Finanz-Tool-Koop',                     note:'Kein eigener Tab — Integration mit externem Tool' },
+    { id:'M-04', text:'Kalender-API-Anbindung',               note:'Google Calendar / iCal Export/Import' },
+    { id:'M-05', text:'Meetings & Audio-Transkription',       note:'Vision: Automatische Protokolle aus Aufnahmen' },
+  ]},
+  { id:'N', title:'N · Modul-Builder', items:[
+    { id:'N-01', text:'Modul-Builder Backend',             note:'Dynamische Felder, Custom-Module pro Org' },
+    { id:'N-02', text:'Modul-Builder Frontend',            note:'Drag & Drop Modul-Editor im Owner-Panel' },
+  ]},
+  { id:'O', title:'O · Template-System', items:[
+    { id:'O-01', text:'Template-System Backend',           note:'Template-Definitionen, Versions-Tracking' },
+    { id:'O-02', text:'KNH Kulturverein Template',         note:'Aus KNH-App extrahieren und als Template paketieren' },
+    { id:'O-03', text:'Onboarding-Flow mit Template-Auswahl', note:'Neues Setup wählt Template → befüllt Org automatisch' },
+  ]},
+  { id:'P', title:'P · Template-Marketplace', items:[
+    { id:'P-01', text:'Template-Registry Backend',         note:'Öffentliche Registry, Versionierung, Rating' },
+    { id:'P-02', text:'Clickbarer Preview ohne Account',   note:'Read-only Demo mit echten Daten' },
+    { id:'P-03', text:'Market-Frontend',                   note:'Browse, Filter, 1-Click-Install' },
+    { id:'P-04', text:'Virale Loops',                      note:'Referral-System, Empfehlungs-Tracking' },
+  ]},
 ];
 
-const STATE_KEY = 'flovr-checklist-v2';
-
-function loadState() {
-  try {
-    // Migration von v1 auf v2
-    const v1 = localStorage.getItem('flovr-checklist-v1');
-    const v2 = localStorage.getItem(STATE_KEY);
-    if (v1 && !v2) {
-      localStorage.setItem(STATE_KEY, v1);
-      return JSON.parse(v1);
-    }
-    return JSON.parse(v2 || '{}');
-  } catch { return {}; }
-}
-
-function saveState(s) {
-  localStorage.setItem(STATE_KEY, JSON.stringify(s));
-}
+const KEY = 'flovr-checklist-v1';
+function loadState() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } }
+function saveState(s) { localStorage.setItem(KEY, JSON.stringify(s)); }
 
 let state = loadState();
 
-function build() {
-  const nav = document.getElementById('section-nav');
-  const mainEl = document.getElementById('main');
-  nav.innerHTML = '';
-  mainEl.innerHTML = '';
+function toggleItem(id)    { state[id] = !state[id]; saveState(state); render(); }
+function toggleSection(id) { state['__sec_'+id] = !state['__sec_'+id]; saveState(state); render(); }
+function resetAll()        { if (!confirm('Alle Haken zurücksetzen?')) return; state = {}; saveState(state); render(); }
 
-  let totalTasks = 0;
+function render() {
+  const total    = SECTIONS.reduce((s, sec) => s + sec.items.length, 0);
+  const done     = SECTIONS.reduce((s, sec) => s + sec.items.filter(i => state[i.id]).length, 0);
+  const pct      = total ? Math.round(done / total * 100) : 0;
 
-  SECTIONS.forEach(section => {
-    totalTasks += section.tasks.length;
-    const done = section.tasks.filter(t => state[t.id]).length;
-    const allDone = done === section.tasks.length;
+  document.getElementById('progressFill').style.width  = pct + '%';
+  document.getElementById('progressLabel').textContent = pct + '%';
+  document.getElementById('statDone').textContent  = done;
+  document.getElementById('statOpen').textContent  = total - done;
+  document.getElementById('statTotal').textContent = total;
 
-    const btn = document.createElement('button');
-    btn.className = 'nav-btn' + (allDone ? ' complete' : '');
-    btn.textContent = section.id + (allDone ? ' ✓' : '');
-    btn.title = section.title;
-    btn.onclick = () => document.getElementById('sec-' + section.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
-    nav.appendChild(btn);
+  document.getElementById('app').innerHTML = SECTIONS.map(sec => {
+    const secDone   = sec.items.filter(i => state[i.id]).length;
+    const allDone   = secDone === sec.items.length;
+    const collapsed = state['__sec_'+sec.id] ? 'collapsed' : '';
 
-    const sec = document.createElement('div');
-    sec.className = 'section';
-    sec.id = 'sec-' + section.id;
-
-    sec.innerHTML = `
-      <div class="section-header">
-        <div class="section-badge">${section.id}</div>
-        <div class="section-title">${section.title}</div>
-        <span class="week-tag">${section.week}</span>
-        <div class="section-progress">${done}/${section.tasks.length}</div>
-      </div>
-      ${section.info ? `<div class="section-info">${section.info}</div>` : ''}
-    `;
-
-    section.tasks.forEach(task => {
-      const isDone = !!state[task.id];
-      const el = document.createElement('div');
-      el.className = 'task' + (isDone ? ' done' : '');
-      el.id = 'task-' + task.id;
-
-      const badges = [
-        task.neu  ? '<span class="badge badge-neu">★ NEU</span>' : '',
-        task.fix  ? '<span class="badge badge-fix">BUGFIX</span>' : '',
-        task.sec  ? '<span class="badge badge-sec">SECURITY</span>' : '',
-      ].join('');
-
-      el.innerHTML = `
-        <div class="checkbox"><span class="check-icon">✓</span></div>
-        <div class="task-label">
-          <div class="task-id">${task.id}</div>
-          <div class="task-name">${task.name}${badges}</div>
-          <div class="task-type">${task.type}</div>
-          ${task.note ? `<div class="task-note">${task.note}</div>` : ''}
+    return `
+      <div class="section ${collapsed}">
+        <div class="section-header" onclick="toggleSection('${sec.id}')">
+          <div class="section-title">${sec.title}</div>
+          <div style="display:flex;align-items:center;gap:0.5rem">
+            <span class="section-badge ${allDone?'all-done':''}">${secDone}/${sec.items.length}</span>
+            <span class="chevron">▼</span>
+          </div>
         </div>
-      `;
-      el.onclick = () => toggle(task.id, section);
-      sec.appendChild(el);
-    });
-
-    const doneNotice = document.createElement('div');
-    doneNotice.className = 'section-done' + (allDone ? ' visible' : '');
-    doneNotice.id = 'done-' + section.id;
-    doneNotice.textContent = '✓ Sektion ' + section.id + ' abgeschlossen';
-    sec.appendChild(doneNotice);
-
-    mainEl.appendChild(sec);
-  });
-
-  document.getElementById('total-count').textContent = totalTasks;
-  updateStats();
+        <div class="section-body">
+          ${sec.items.map(item => `
+            <div class="item ${state[item.id]?'done':''}" onclick="toggleItem('${item.id}')">
+              <div class="cb"><span class="cb-check">✓</span></div>
+              <div class="item-content">
+                <div class="item-id">${item.id}</div>
+                <div class="item-text">${item.text}</div>
+                ${item.note ? `<div class="item-note">${item.note}</div>` : ''}
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  }).join('');
 }
 
-function toggle(taskId, section) {
-  state[taskId] = !state[taskId];
-  saveState(state);
-
-  const el = document.getElementById('task-' + taskId);
-  el.classList.toggle('done', state[taskId]);
-
-  const done = section.tasks.filter(t => state[t.id]).length;
-  const allDone = done === section.tasks.length;
-  const sec = document.getElementById('sec-' + section.id);
-  sec.querySelector('.section-progress').textContent = done + '/' + section.tasks.length;
-
-  const notice = document.getElementById('done-' + section.id);
-  notice.classList.toggle('visible', allDone);
-
-  document.querySelectorAll('.nav-btn').forEach(btn => {
-    if (btn.title === section.title) {
-      btn.className = 'nav-btn' + (allDone ? ' complete' : '');
-      btn.textContent = section.id + (allDone ? ' ✓' : '');
-    }
-  });
-
-  updateStats();
-}
-
-function updateStats() {
-  const allTasks = SECTIONS.flatMap(s => s.tasks);
-  const doneCount = allTasks.filter(t => state[t.id]).length;
-  const total = allTasks.length;
-  document.getElementById('done-count').textContent = doneCount;
-  document.getElementById('total-count').textContent = total;
-  document.getElementById('progress-bar').style.width = (doneCount / total * 100) + '%';
-}
-
-function syncLink() {
-  const encoded = btoa(JSON.stringify(state));
-  const url = location.origin + location.pathname + '#sync=' + encoded;
-  navigator.clipboard.writeText(url).then(() => {
-    const toast = document.getElementById('sync-toast');
-    toast.style.display = 'block';
-    setTimeout(() => { toast.style.display = 'none'; }, 2000);
-  }).catch(() => prompt('Link kopieren:', url));
-}
-
-function loadFromHash() {
-  const hash = location.hash;
-  if (!hash.startsWith('#sync=')) return;
-  try {
-    const imported = JSON.parse(atob(hash.slice(6)));
-    if (confirm('Sync-Link erkannt — Fortschritt übernehmen?')) {
-      state = imported;
-      saveState(state);
-      history.replaceState(null, '', location.pathname);
-    }
-  } catch {}
-}
-
-function resetAll() {
-  if (!confirm('Wirklich alle Checkboxen zurücksetzen?')) return;
-  state = {};
-  saveState(state);
-  build();
-}
-
-loadFromHash();
-build();
+render();
 </script>
 </body>
 </html>
