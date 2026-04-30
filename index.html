@@ -496,7 +496,18 @@ function saveState(s) { localStorage.setItem(STATE_KEY, JSON.stringify(s)); }
 let state = loadState();
 
 const TODO_KEY = 'flovr-todos';
-function loadTodos() { try { return JSON.parse(localStorage.getItem(TODO_KEY) || '[]'); } catch { return []; } }
+const DEFAULT_TODOS = [
+  { text: 'A-10c: GitHub Environment "production" mit Required Reviewer einrichten — GitHub → Settings → Environments → production → Required reviewers (erst wenn zweiter Deployer dazu kommt)', done: false },
+  { text: 'Nach A-09: Health-Check in .github/workflows/deploy.yml aktivieren — TODO C-01 suchen → Zeile einkommentieren', done: false },
+];
+function loadTodos() {
+  try {
+    const stored = localStorage.getItem(TODO_KEY);
+    if (stored) return JSON.parse(stored);
+    saveTodos(DEFAULT_TODOS);
+    return DEFAULT_TODOS.map(t => ({ ...t }));
+  } catch { return []; }
+}
 function saveTodos(t) { localStorage.setItem(TODO_KEY, JSON.stringify(t)); }
 let todos = loadTodos();
 
