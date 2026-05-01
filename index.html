@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flovr v2.0 — Aufbau-Checkliste</title>
+<title>Flovr v1.6 — Aufbau-Checkliste</title>
 <style>
   :root {
     --bg: #0A1A1A;
@@ -49,84 +49,135 @@
     margin-bottom: 16px;
   }
 
-  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
 
   .logo-dot {
-    width: 32px; height: 32px;
+    width: 32px;
+    height: 32px;
     background: linear-gradient(135deg, #07908E, #0ABFBC);
     border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; font-weight: 900; color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 900;
+    color: white;
   }
 
   .logo h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
   .logo span { color: var(--text-dim); font-weight: 400; font-size: 14px; margin-left: 4px; }
-
-  .version-tag {
-    font-size: 11px; padding: 2px 8px; border-radius: 10px;
-    background: rgba(10,191,188,0.12); color: #0ABFBC;
-    border: 1px solid rgba(10,191,188,0.25); font-weight: 600;
-  }
 
   .stats { display: flex; gap: 20px; align-items: center; }
   .stat { text-align: right; }
   .stat-num { font-size: 22px; font-weight: 700; color: var(--pink); line-height: 1; }
   .stat-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
 
+  .version-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(10,191,188,0.12);
+    color: #0ABFBC;
+    border: 1px solid rgba(10,191,188,0.25);
+    font-weight: 600;
+  }
+
   .progress-wrap { background: var(--border); border-radius: 4px; height: 6px; overflow: hidden; }
   .progress-bar { height: 100%; background: linear-gradient(90deg, #07908E, #4DD9D7); border-radius: 4px; transition: width 0.4s ease; min-width: 2px; }
 
   .section-nav {
-    display: flex; gap: 4px;
+    display: flex;
+    gap: 4px;
     padding: 12px 32px;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
-    overflow-x: auto; scrollbar-width: none;
+    overflow-x: auto;
+    scrollbar-width: none;
     flex-wrap: wrap;
   }
   .section-nav::-webkit-scrollbar { display: none; }
 
   .nav-btn {
-    padding: 5px 12px; border-radius: 20px;
-    border: 1px solid var(--border); background: transparent;
-    color: var(--text-dim); font-size: 12px; cursor: pointer;
-    transition: all 0.2s; white-space: nowrap; font-family: inherit;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    font-family: inherit;
   }
   .nav-btn:hover { border-color: var(--purple-light); color: var(--text); }
   .nav-btn.active { background: var(--purple); border-color: var(--purple); color: white; }
   .nav-btn.complete { border-color: var(--green); color: var(--green); }
-  .nav-btn.todo-btn {
-    border-color: rgba(10,191,188,0.4); color: #0ABFBC;
-    background: rgba(10,191,188,0.08); font-weight: 600;
-  }
-  .nav-btn.todo-btn:hover { background: rgba(10,191,188,0.18); }
 
   main { max-width: 860px; margin: 0 auto; padding: 32px 24px 100px; }
 
   .section { margin-bottom: 40px; }
 
   .section-header {
-    display: flex; align-items: center; gap: 12px;
-    margin-bottom: 12px; padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
     border-bottom: 1px solid var(--border);
   }
 
+  .section.section-disabled {
+    opacity: 0.45;
+    pointer-events: none;
+    filter: grayscale(0.6);
+  }
+  .section.section-disabled .section-header {
+    border-bottom-color: #0D2A28;
+  }
+  .section-disabled-tag {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-dim);
+    background: #0D2020;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 7px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-left: auto;
+  }
+
   .section-badge {
-    width: 28px; height: 28px;
+    width: 28px;
+    height: 28px;
     background: linear-gradient(135deg, #07908E, #0ABFBC);
     border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 800; color: white; flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    color: white;
+    flex-shrink: 0;
   }
 
   .section-title { font-size: 15px; font-weight: 600; color: var(--text); flex: 1; }
   .section-progress { font-size: 12px; color: var(--text-dim); }
 
   .task {
-    display: flex; align-items: flex-start; gap: 12px;
-    padding: 11px 14px; border-radius: var(--radius);
-    cursor: pointer; transition: background 0.15s;
-    user-select: none; margin-bottom: 3px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+    margin-bottom: 3px;
     border: 1px solid transparent;
   }
   .task:hover { background: var(--surface2); border-color: var(--border); }
@@ -134,10 +185,17 @@
   .task.done:hover { border-color: #2a3a2a; }
 
   .checkbox {
-    width: 20px; height: 20px; border-radius: 5px;
-    border: 2px solid var(--border); flex-shrink: 0; margin-top: 1px;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s; background: transparent;
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    background: transparent;
   }
   .task:hover .checkbox { border-color: var(--purple-light); }
   .task.done .checkbox { background: var(--green); border-color: var(--green); }
@@ -153,27 +211,61 @@
   .task.done .task-type { color: #2a3a2a; }
 
   .badge {
-    display: inline-block; font-size: 9px; font-weight: 700;
-    padding: 1px 5px; border-radius: 4px; margin-left: 6px;
-    vertical-align: middle; letter-spacing: 0.3px;
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 4px;
+    margin-left: 6px;
+    vertical-align: middle;
+    letter-spacing: 0.3px;
   }
-  .badge-neu  { background: rgba(10,191,188,0.18); color: #4DD9D7; border: 1px solid rgba(10,191,188,0.3); }
-  .badge-fix  { background: rgba(239,68,68,0.18);  color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
-  .badge-sec  { background: rgba(245,158,11,0.18); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+  .badge-neu {
+    background: rgba(10,191,188,0.18);
+    color: #4DD9D7;
+    border: 1px solid rgba(10,191,188,0.3);
+  }
+  .badge-fix {
+    background: rgba(239,68,68,0.18);
+    color: #f87171;
+    border: 1px solid rgba(239,68,68,0.3);
+  }
+  .badge-sec {
+    background: rgba(245,158,11,0.18);
+    color: #fbbf24;
+    border: 1px solid rgba(245,158,11,0.3);
+  }
   .task.done .badge { background: rgba(58,90,74,0.3); color: #3a5a4a; border-color: #2a3a2a; }
 
-  .task-note { font-size: 11px; color: var(--text-dim); margin-top: 3px; line-height: 1.4; font-style: italic; }
+  .task-note {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 3px;
+    line-height: 1.4;
+    font-style: italic;
+  }
   .task.done .task-note { color: #2a3a2a; }
 
   .fab-group {
-    position: fixed; bottom: 24px; right: 24px;
-    display: flex; flex-direction: column; gap: 8px; align-items: flex-end;
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
   }
   .fab-btn {
-    padding: 10px 16px; border-radius: 8px;
-    border: 1px solid var(--border); background: var(--surface2);
-    color: var(--text-dim); font-size: 12px; cursor: pointer;
-    font-family: inherit; transition: all 0.2s; white-space: nowrap;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-dim);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+    white-space: nowrap;
   }
   .fab-btn:hover { border-color: var(--purple-light); color: var(--text); }
   .fab-btn.danger:hover { border-color: #ff6b6b; color: #ff6b6b; }
@@ -181,99 +273,53 @@
   .fab-btn.primary:hover { background: rgba(10,191,188,0.25); }
 
   .sync-toast {
-    position: fixed; bottom: 140px; right: 24px;
-    background: var(--green); color: #0d1a0d;
-    padding: 10px 16px; border-radius: 8px;
-    font-size: 13px; font-weight: 600;
-    display: none; animation: fadeInOut 2s ease forwards;
+    position: fixed;
+    bottom: 140px;
+    right: 24px;
+    background: var(--green);
+    color: #0d1a0d;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    display: none;
+    animation: fadeInOut 2s ease forwards;
   }
 
   @keyframes fadeInOut {
-    0%   { opacity: 0; transform: translateY(8px); }
-    20%  { opacity: 1; transform: translateY(0); }
-    80%  { opacity: 1; }
+    0% { opacity: 0; transform: translateY(8px); }
+    20% { opacity: 1; transform: translateY(0); }
+    80% { opacity: 1; }
     100% { opacity: 0; }
   }
 
   .section-done {
-    text-align: center; padding: 12px; color: var(--green);
-    font-size: 13px; opacity: 0; transition: opacity 0.4s;
+    text-align: center;
+    padding: 12px;
+    color: var(--green);
+    font-size: 13px;
+    opacity: 0;
+    transition: opacity 0.4s;
   }
   .section-done.visible { opacity: 1; }
 
   .week-tag {
-    font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 600;
-    background: rgba(10,191,188,0.12); color: #0ABFBC;
-    border: 1px solid rgba(10,191,188,0.25);
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-weight: 600;
+    background: rgba(10, 191, 188, 0.12);
+    color: #0ABFBC;
+    border: 1px solid rgba(10, 191, 188, 0.25);
   }
 
   .section-info {
-    font-size: 12px; color: var(--text-dim);
-    padding: 8px 14px; border-left: 2px solid var(--border);
-    margin-bottom: 8px; line-height: 1.5;
-  }
-
-  .section-header {
-    cursor: pointer;
-  }
-  .section-header:hover .section-title { color: var(--purple-light); }
-
-  .todo-add {
-    display: flex; gap: 8px; margin-bottom: 16px;
-  }
-  .todo-add input {
-    flex: 1; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 8px; padding: 9px 14px; color: var(--text);
-    font-family: inherit; font-size: 13px; outline: none;
-    transition: border-color 0.2s;
-  }
-  .todo-add input:focus { border-color: var(--purple-light); }
-  .todo-add input::placeholder { color: var(--text-dim); }
-  .todo-add button {
-    padding: 9px 16px; border-radius: 8px;
-    background: rgba(10,191,188,0.15); border: 1px solid #0ABFBC;
-    color: #4DD9D7; font-family: inherit; font-size: 13px;
-    cursor: pointer; transition: background 0.2s; white-space: nowrap;
-  }
-  .todo-add button:hover { background: rgba(10,191,188,0.28); }
-
-  .todo-item {
-    display: flex; align-items: flex-start; gap: 10px;
-    padding: 9px 12px; border-radius: 8px;
-    border: 1px solid transparent; margin-bottom: 3px;
-    cursor: pointer; transition: background 0.15s;
-  }
-  .todo-item:hover { background: var(--surface2); border-color: var(--border); }
-  .todo-item.done { opacity: 0.45; }
-  .todo-item.done .todo-item-text { text-decoration: line-through; color: var(--done-text); }
-
-  .todo-item-text { flex: 1; font-size: 13px; line-height: 1.4; }
-  .todo-item-del {
-    font-size: 14px; color: var(--text-dim); cursor: pointer;
-    padding: 0 4px; line-height: 1; flex-shrink: 0;
-    transition: color 0.15s;
-  }
-  .todo-item-del:hover { color: #ff6b6b; }
-
-  .todo-empty { font-size: 12px; color: var(--text-dim); padding: 8px 0; }
-
-  .section-toggle {
-    font-size: 11px; color: var(--text-dim);
-    margin-left: auto; padding-right: 4px;
-    transition: transform 0.2s;
-    flex-shrink: 0;
-  }
-  .section.open .section-toggle { transform: rotate(90deg); }
-
-  .section-body {
-    display: none;
-    animation: fadeIn 0.15s ease;
-  }
-  .section.open .section-body { display: block; }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-4px); }
-    to   { opacity: 1; transform: translateY(0); }
+    font-size: 12px;
+    color: var(--text-dim);
+    padding: 8px 14px;
+    border-left: 2px solid var(--border);
+    margin-bottom: 8px;
+    line-height: 1.5;
   }
 </style>
 </head>
@@ -284,7 +330,7 @@
     <div class="logo">
       <div class="logo-dot">F</div>
       <h1>Flovr <span>Aufbau-Checkliste</span></h1>
-      <span class="version-tag">v2.0</span>
+      <span class="version-tag">v1.6</span>
     </div>
     <div class="stats">
       <div class="stat">
@@ -327,8 +373,7 @@ const SECTIONS = [
       { id: 'A-08', name: 'MariaDB einrichten', type: 'DU', fix: true, note: 'BUGFIX v1.6: GRANT SELECT/INSERT/UPDATE/DELETE (nicht ALL), separater flovr_admin für Migrations, sql_mode STRICT, innodb_buffer_pool 512M' },
       { id: 'A-09', name: 'GitHub Actions CI/CD Pipeline', type: 'PROMPT + DU', fix: true, note: 'BUGFIX v1.6: composer install nach Deploy, concurrency guard, SSH-Key-Cleanup, Host-Key-Validierung' },
       { id: 'A-10', name: 'Staging-Umgebung einrichten', type: 'PROMPT + DU' },
-      { id: 'A-10c', name: 'GitHub Environment "production" mit Required Reviewer', type: 'DU', note: 'Erst relevant wenn zweiter Deployer dazu kommt — GitHub → Settings → Environments → production → Required reviewers' },
-      { id: 'A-11', name: 'Backup-System (täglich 03:00, Netcup Block Storage)', type: 'PROMPT + DU', fix: true, note: 'v1.7: /dev/vdb als /mnt/backup (100 GB Block Storage), kein rclone/gdrive — gleicher Anbieter, kein AVV nötig' },
+      { id: 'A-11', name: 'Backup-System (täglich 03:00, lokal + Google Drive)', type: 'PROMPT + DU', fix: true, note: 'BUGFIX v1.6: .my.cnf statt -p Argument, korrekter Storage-Pfad, rclone Offsite Pflicht' },
     ]
   },
   {
@@ -346,6 +391,8 @@ const SECTIONS = [
     tasks: [
       { id: 'C-01', name: 'Verzeichnis-Struktur + Router + CORS', type: 'PROMPT', sec: true, note: 'APCu-Cache für CORS-Domain-Lookup, HTTP-Methoden-Whitelist' },
       { id: 'C-02', name: 'Auth-System (vollständig)', type: 'PROMPT', sec: true, fix: true, note: 'BUGFIX v1.6: tenant_id als "tid"-Claim im JWT PFLICHT, firebase/php-jwt ^6.10 pinnen' },
+      { id: 'C-03', name: 'Dev-Bootstrap: seed_test_users.php auf Staging ausgeführt', type: 'DU', note: 'Bootstrap-SQL: Owner-Account ohne Invite-Flow anlegen. Multi-Tenant-safe (kein hardcodiertes tenant_id=1)' },
+      { id: 'C-03b', name: 'Login mit allen 7 Test-Rollen getestet (passiv→owner)', type: 'REVIEW', sec: true, note: 'Jede Rolle einloggen, /api/auth/me prüfen, role_level im JWT korrekt?' },
     ]
   },
   {
@@ -466,6 +513,19 @@ const SECTIONS = [
       { id: 'L-03', name: 'Ersten Owner-Account (Vorstand) aktivieren', type: 'DU' },
       { id: 'L-04', name: 'IS_LIVE = true setzen', type: 'DU' },
       { id: 'L-05', name: 'Launch-Checkliste (35+ Tabellen, alle Sections)', type: 'REVIEW' },
+      { id: 'L-06', name: 'seed_test_users.php NICHT auf Production — prüfen via SQL', type: 'REVIEW', sec: true, note: 'SELECT email FROM personen_kontakt WHERE email LIKE \'%@test.flovr.de%\' → muss 0 Zeilen ergeben' },
+    ]
+  },
+  {
+    id: 'T', title: 'TRIAL-SYSTEM — SaaS Self-Service (Post-KNH-Launch)', week: 'ab Juli',
+    info: '⚠️ NICHT für KNH-Launch. Erst nach stabilem Pilot-Betrieb umsetzen. Sektion ist ausgegraut bis Launch abgeschlossen.',
+    disabled: true,
+    tasks: [
+      { id: 'T-01a', name: 'Trial-Schema-Migration ausgeführt (004_trial_system.sql)', type: 'DU', note: 'Neue Spalten in organizations: trial_ends_at, is_trial, stripe_customer_id, stripe_subscription_id' },
+      { id: 'T-01b', name: 'trial.php Middleware aktiv + getestet', type: 'PROMPT + DU', sec: true, note: 'Abgelaufenes Trial → 402 Payment Required; aktives Trial → weiter' },
+      { id: 'T-02a', name: 'POST /api/register implementiert', type: 'PROMPT', note: 'Self-Service: Org + Owner + Trial in einer Transaktion anlegen' },
+      { id: 'T-02b', name: 'Stripe angebunden (stripe/stripe-php + STRIPE_SECRET_KEY)', type: 'PROMPT + DU', sec: true, note: 'Customer bei Registrierung anlegen; stripe_customer_id in organizations speichern' },
+      { id: 'T-02c', name: 'Self-Service Registrierung live getestet', type: 'REVIEW', note: 'Neue Org registrieren → Login → /api/auth/me → Trial-Status prüfen' },
     ]
   },
   {
@@ -484,132 +544,30 @@ const STATE_KEY = 'flovr-checklist-v2';
 
 function loadState() {
   try {
+    // Migration von v1 auf v2
     const v1 = localStorage.getItem('flovr-checklist-v1');
     const v2 = localStorage.getItem(STATE_KEY);
-    if (v1 && !v2) { localStorage.setItem(STATE_KEY, v1); return JSON.parse(v1); }
+    if (v1 && !v2) {
+      localStorage.setItem(STATE_KEY, v1);
+      return JSON.parse(v1);
+    }
     return JSON.parse(v2 || '{}');
   } catch { return {}; }
 }
 
-function saveState(s) { localStorage.setItem(STATE_KEY, JSON.stringify(s)); }
+function saveState(s) {
+  localStorage.setItem(STATE_KEY, JSON.stringify(s));
+}
 
 let state = loadState();
-
-const TODO_KEY = 'flovr-todos';
-const DEFAULT_TODOS = [
-  { text: 'A-10c: GitHub Environment "production" mit Required Reviewer einrichten — GitHub → Settings → Environments → production → Required reviewers (erst wenn zweiter Deployer dazu kommt)', done: false },
-  { text: 'Nach A-09: Health-Check in .github/workflows/deploy.yml aktivieren — TODO C-01 suchen → Zeile einkommentieren', done: false },
-];
-function loadTodos() {
-  try {
-    const stored = localStorage.getItem(TODO_KEY);
-    if (stored) return JSON.parse(stored);
-    saveTodos(DEFAULT_TODOS);
-    return DEFAULT_TODOS.map(t => ({ ...t }));
-  } catch { return []; }
-}
-function saveTodos(t) { localStorage.setItem(TODO_KEY, JSON.stringify(t)); }
-let todos = loadTodos();
-
-function buildTodoSection(mainEl) {
-  const sec = document.createElement('div');
-  sec.className = 'section';
-  sec.id = 'sec-TODO';
-
-  const header = document.createElement('div');
-  header.className = 'section-header';
-  header.innerHTML = `
-    <div class="section-badge" style="background:linear-gradient(135deg,#0ABFBC,#4DD9D7);font-size:9px;width:32px">TODO</div>
-    <div class="section-title">OFFENE PUNKTE — Notizen</div>
-    <div class="section-progress" id="prog-TODO">–</div>
-    <span class="section-toggle">▶</span>
-  `;
-  header.onclick = () => sec.classList.toggle('open');
-  sec.appendChild(header);
-
-  const body = document.createElement('div');
-  body.className = 'section-body';
-  body.id = 'todo-body';
-  body.innerHTML = `
-    <div class="todo-add">
-      <input id="todo-input" type="text" placeholder="Neuen Punkt hinzufügen…" maxlength="200">
-      <button onclick="addTodo()">+ Hinzufügen</button>
-    </div>
-    <div id="todo-list"></div>
-  `;
-  sec.appendChild(body);
-  mainEl.appendChild(sec);
-}
-
-function renderTodos() {
-  const list = document.getElementById('todo-list');
-  if (!list) return;
-  if (todos.length === 0) {
-    list.innerHTML = '<div class="todo-empty">Noch keine Einträge — einfach oben eintragen.</div>';
-  } else {
-    list.innerHTML = '';
-    todos.forEach((item, i) => {
-      const el = document.createElement('div');
-      el.className = 'todo-item' + (item.done ? ' done' : '');
-      el.innerHTML = `
-        <div class="checkbox" onclick="toggleTodo(${i});event.stopPropagation()"><span class="check-icon">✓</span></div>
-        <div class="todo-item-text">${escHtml(item.text)}</div>
-        <span class="todo-item-del" onclick="deleteTodo(${i});event.stopPropagation()" title="Löschen">✕</span>
-      `;
-      list.appendChild(el);
-    });
-  }
-  const done = todos.filter(t => t.done).length;
-  const prog = document.getElementById('prog-TODO');
-  if (prog) prog.textContent = todos.length ? done + '/' + todos.length : '–';
-}
-
-function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-function addTodo() {
-  const inp = document.getElementById('todo-input');
-  const text = inp.value.trim();
-  if (!text) return;
-  todos.push({ text, done: false });
-  saveTodos(todos);
-  inp.value = '';
-  renderTodos();
-}
-
-function toggleTodo(i) {
-  todos[i].done = !todos[i].done;
-  saveTodos(todos);
-  renderTodos();
-}
-
-function deleteTodo(i) {
-  todos.splice(i, 1);
-  saveTodos(todos);
-  renderTodos();
-}
-
-function updateTodoProgress() { renderTodos(); }
 
 function build() {
   const nav = document.getElementById('section-nav');
   const mainEl = document.getElementById('main');
   nav.innerHTML = '';
   mainEl.innerHTML = '';
+
   let totalTasks = 0;
-
-  // TODO Übersichts-Button ganz vorne
-  const todoBtn = document.createElement('button');
-  todoBtn.className = 'nav-btn todo-btn';
-  todoBtn.textContent = '📋 TODO';
-  todoBtn.title = 'Alle offenen Punkte';
-  todoBtn.onclick = () => {
-    const el = document.getElementById('sec-TODO');
-    el.classList.add('open');
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
-  nav.appendChild(todoBtn);
-
-  buildTodoSection(mainEl);
 
   SECTIONS.forEach(section => {
     totalTasks += section.tasks.length;
@@ -620,37 +578,23 @@ function build() {
     btn.className = 'nav-btn' + (allDone ? ' complete' : '');
     btn.textContent = section.id + (allDone ? ' ✓' : '');
     btn.title = section.title;
-    btn.onclick = () => {
-      const el = document.getElementById('sec-' + section.id);
-      el.classList.add('open');
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    };
+    btn.onclick = () => document.getElementById('sec-' + section.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
     nav.appendChild(btn);
 
     const sec = document.createElement('div');
-    sec.className = 'section';
+    sec.className = 'section' + (section.disabled ? ' section-disabled' : '');
     sec.id = 'sec-' + section.id;
 
-    const header = document.createElement('div');
-    header.className = 'section-header';
-    header.innerHTML = `
-      <div class="section-badge">${section.id}</div>
-      <div class="section-title">${section.title}</div>
-      <span class="week-tag">${section.week}</span>
-      <div class="section-progress" id="prog-${section.id}">${done}/${section.tasks.length}</div>
-      <span class="section-toggle">▶</span>
+    sec.innerHTML = `
+      <div class="section-header">
+        <div class="section-badge">${section.id}</div>
+        <div class="section-title">${section.title}</div>
+        <span class="week-tag">${section.week}</span>
+        ${section.disabled ? '<span class="section-disabled-tag">Post-Launch</span>' : ''}
+        <div class="section-progress">${done}/${section.tasks.length}</div>
+      </div>
+      ${section.info ? `<div class="section-info">${section.info}</div>` : ''}
     `;
-    header.onclick = () => sec.classList.toggle('open');
-    sec.appendChild(header);
-
-    const body = document.createElement('div');
-    body.className = 'section-body';
-    if (section.info) {
-      const info = document.createElement('div');
-      info.className = 'section-info';
-      info.textContent = section.info;
-      body.appendChild(info);
-    }
 
     section.tasks.forEach(task => {
       const isDone = !!state[task.id];
@@ -659,9 +603,9 @@ function build() {
       el.id = 'task-' + task.id;
 
       const badges = [
-        task.neu ? '<span class="badge badge-neu">★ NEU</span>' : '',
-        task.fix ? '<span class="badge badge-fix">BUGFIX</span>' : '',
-        task.sec ? '<span class="badge badge-sec">SECURITY</span>' : '',
+        task.neu  ? '<span class="badge badge-neu">★ NEU</span>' : '',
+        task.fix  ? '<span class="badge badge-fix">BUGFIX</span>' : '',
+        task.sec  ? '<span class="badge badge-sec">SECURITY</span>' : '',
       ].join('');
 
       el.innerHTML = `
@@ -674,22 +618,20 @@ function build() {
         </div>
       `;
       el.onclick = () => toggle(task.id, section);
-      body.appendChild(el);
+      sec.appendChild(el);
     });
 
     const doneNotice = document.createElement('div');
     doneNotice.className = 'section-done' + (allDone ? ' visible' : '');
     doneNotice.id = 'done-' + section.id;
     doneNotice.textContent = '✓ Sektion ' + section.id + ' abgeschlossen';
-    body.appendChild(doneNotice);
-    sec.appendChild(body);
+    sec.appendChild(doneNotice);
 
     mainEl.appendChild(sec);
   });
 
   document.getElementById('total-count').textContent = totalTasks;
   updateStats();
-  updateTodoProgress();
 }
 
 function toggle(taskId, section) {
@@ -697,15 +639,15 @@ function toggle(taskId, section) {
   saveState(state);
 
   const el = document.getElementById('task-' + taskId);
-  if (el) el.classList.toggle('done', state[taskId]);
+  el.classList.toggle('done', state[taskId]);
 
   const done = section.tasks.filter(t => state[t.id]).length;
   const allDone = done === section.tasks.length;
-  const prog = document.getElementById('prog-' + section.id);
-  if (prog) prog.textContent = done + '/' + section.tasks.length;
+  const sec = document.getElementById('sec-' + section.id);
+  sec.querySelector('.section-progress').textContent = done + '/' + section.tasks.length;
 
   const notice = document.getElementById('done-' + section.id);
-  if (notice) notice.classList.toggle('visible', allDone);
+  notice.classList.toggle('visible', allDone);
 
   document.querySelectorAll('.nav-btn').forEach(btn => {
     if (btn.title === section.title) {
@@ -715,9 +657,7 @@ function toggle(taskId, section) {
   });
 
   updateStats();
-  updateTodoProgress();
 }
-
 
 function updateStats() {
   const allTasks = SECTIONS.flatMap(s => s.tasks);
@@ -760,10 +700,6 @@ function resetAll() {
 
 loadFromHash();
 build();
-renderTodos();
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && document.activeElement?.id === 'todo-input') addTodo();
-});
 </script>
 </body>
 </html>
