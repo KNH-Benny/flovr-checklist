@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flovr v2.0 — Aufbau-Checkliste</title>
+<title>Flovr v2.0 — Aufbau-Checkliste (Stand: Mai 2026)</title>
 <style>
   :root {
     --bg: #0A1A1A;
@@ -284,7 +284,7 @@
     <div class="logo">
       <div class="logo-dot">F</div>
       <h1>Flovr <span>Aufbau-Checkliste</span></h1>
-      <span class="version-tag">v2.0</span>
+      <span class="version-tag">v2.0 · Mai 2026</span>
     </div>
     <div class="stats">
       <div class="stat">
@@ -314,7 +314,7 @@
 <script>
 const SECTIONS = [
   {
-    id: 'A', title: 'INFRASTRUKTUR — VPS & Server-Setup', week: '07.–09. Mai',
+    id: 'A', title: 'INFRASTRUKTUR — VPS & Server-Setup', week: '✅ Abgeschlossen',
     info: 'Einmalige Server-Grundlage. DU-Schritte: manuell auf VPS. PROMPT-Schritte: Claude schreibt Setup-Scripts die du dann ausführst.',
     tasks: [
       { id: 'A-01', name: 'VPS bestellen (Netcup VPS 500 G12)', type: 'DU' },
@@ -332,7 +332,7 @@ const SECTIONS = [
     ]
   },
   {
-    id: 'B', title: 'DATENBANK — Schema & Migration', week: '07.–09. Mai',
+    id: 'B', title: 'DATENBANK — Schema & Migration', week: '✅ Abgeschlossen',
     info: 'MariaDB Schema mit Multi-Tenant-Isolation. tenant_id in jeder Tabelle — Pflicht.',
     tasks: [
       { id: 'B-01', name: 'Vollständiges MariaDB Schema (35+ Tabellen)', type: 'PROMPT', fix: true, note: 'BUGFIX v1.6: organizations statt tenants als FK-Ziel, projekte statt projects, personen_kontakt UNIQUE per tenant' },
@@ -341,34 +341,36 @@ const SECTIONS = [
     ]
   },
   {
-    id: 'C', title: 'PHP BACKEND — Grundgerüst', week: '07.–09. Mai',
+    id: 'C', title: 'PHP BACKEND — Grundgerüst', week: '✅ Abgeschlossen',
     info: 'Zentraler Router, CORS, Auth-Middleware. Basis für alle API-Endpunkte.',
     tasks: [
       { id: 'C-01', name: 'Verzeichnis-Struktur + Router + CORS', type: 'PROMPT', sec: true, note: 'APCu-Cache für CORS-Domain-Lookup, HTTP-Methoden-Whitelist' },
       { id: 'C-02', name: 'Auth-System (vollständig)', type: 'PROMPT', sec: true, fix: true, note: 'BUGFIX v1.6: tenant_id als "tid"-Claim im JWT PFLICHT, firebase/php-jwt ^6.10 pinnen' },
-      { id: 'C-03', name: 'Dev-Bootstrap: seed_test_users.php auf Staging ausgeführt', type: 'DU', note: 'Bootstrap-SQL: Owner-Account ohne Invite-Flow anlegen. Multi-Tenant-safe (kein hardcodiertes tenant_id=1)' },
-      { id: 'C-03b', name: 'Login mit allen 7 Test-Rollen getestet (passiv→owner)', type: 'REVIEW', sec: true, note: 'Jede Rolle einloggen, /api/auth/me prüfen, role_level im JWT korrekt?' },
+      { id: 'C-03', name: 'Dev-Bootstrap — Erster Owner-Account & Staging-Testdaten', type: 'PROMPT + DU', note: 'Owner-Account anlegen, Demo-Mitglieder für Staging' },
+      { id: 'C-03b', name: 'Rollen-Test (alle 7 Rollen auf Staging durchspielen)', type: 'REVIEW', note: '⏳ Offen — manuell auf Staging testen: guest→kernmitglied→pl→vorstand→owner' },
     ]
   },
   {
-    id: 'D', title: 'SECURITY HOTFIXES — Frontend', week: '07.–09. Mai',
+    id: 'D', title: 'SECURITY HOTFIXES — Frontend', week: '⏳ Nächster Schritt',
     info: 'Sicherheitskritische Bereinigung der KNH-App bevor sie als Flovr-App weitergebaut wird.',
     tasks: [
-      { id: 'D-01', name: 'Demo-Users entfernen, Google Fonts lokal hosten', type: 'PROMPT', sec: true, note: 'Hardcodierte Passwörter raus, kein Google CDN (DSGVO)' },
-      { id: 'D-02', name: 'Git History bereinigen (leaked Apps Script URL)', type: 'DU', sec: true, note: 'WICHTIG: CI zuerst deaktivieren → filter-repo → force push → CI reaktivieren' },
+      { id: 'D-01', name: 'Demo-Users entfernen, Google Fonts lokal hosten', type: 'PROMPT', sec: true, note: '⏳ Nächster Schritt — Hardcodierte Passwörter raus, kein Google CDN (DSGVO)' },
+      { id: 'D-02', name: 'Git History bereinigen (leaked Apps Script URL)', type: 'DU', sec: true, note: '⏳ Braucht lokales Terminal — CI deaktivieren → filter-repo → force push → CI reaktivieren' },
     ]
   },
   {
-    id: 'E', title: 'STORAGE — Datei-Verwaltung', week: '12.–16. Mai',
-    info: 'Provider-abstrahiertes Storage System: lokal oder Google Drive, ein Interface.',
+    id: 'E', title: 'STORAGE — Multi-Provider Datei-Verwaltung', week: '05.–09. Mai',
+    info: 'Multi-Provider Storage: Local, Google Drive, Dropbox, S3 — per Tenant konfigurierbar im Owner Panel. Credentials AES-256-GCM verschlüsselt in DB.',
     tasks: [
-      { id: 'E-01', name: 'Storage Interface + Local Provider', type: 'PROMPT', note: 'X-Accel-Redirect für sichere Dateiauslieferung via nginx' },
-      { id: 'E-02', name: 'Upload-Endpunkte', type: 'PROMPT', sec: true, note: 'finfo MIME-Validierung (nicht Content-Type), Zufalls-Dateinamen, Extension-Whitelist' },
-      { id: 'E-03', name: 'Google Drive Setup (einmalig, Service-Account)', type: 'DU + PROMPT', note: 'AVV mit Google prüfen wenn aktiviert (DSGVO Drittland-Transfer)' },
+      { id: 'E-00', name: 'DB-Migration: organizations.storage_provider + storage_config', type: 'DU', note: 'ALTER TABLE organizations ADD storage_provider ENUM + storage_config JSON (AES-encrypted)' },
+      { id: 'E-01', name: 'Storage Interface + 4 Provider (Local, Google Drive, Dropbox, S3)', type: 'PROMPT', neu: true, note: 'Tenant-basierte Factory: storage($tenant_id) — lädt Provider aus DB, entschlüsselt Config' },
+      { id: 'E-02', name: 'Upload-Endpunkte (Tenant-basiert)', type: 'PROMPT', sec: true, note: 'storage() → storage($auth["tenant_id"]), finfo MIME-Validierung, Zufalls-Dateinamen' },
+      { id: 'E-03', name: 'Storage Provider Setup — alle 4 Provider', type: 'DU', note: '⏭️ Skip wenn Local reicht. GDrive: Service Account; Dropbox: Access Token; S3: IAM User + Bucket' },
+      { id: 'E-04', name: 'Storage Provider im Owner Panel (Frontend + Admin-API)', type: 'PROMPT', neu: true, note: 'GET/PUT/DELETE /api/admin/storage + POST /test — Setup-Wizard + Verbindungstest pro Provider' },
     ]
   },
   {
-    id: 'F', title: 'CORE REST API — Alle Endpunkte', week: '12.–16. Mai',
+    id: 'F', title: 'CORE REST API — Alle Endpunkte', week: '05.–09. Mai',
     info: 'REGEL: Jedes SELECT/UPDATE/DELETE braucht WHERE tenant_id = $auth[\'tenant_id\']. Keine Ausnahmen.',
     tasks: [
       { id: 'F-01', name: 'Organisation & Org-Config', type: 'PROMPT', note: 'Public-Endpunkt: Tenant-Zuordnung über Request-Domain (nicht Parameter!)' },
@@ -384,7 +386,7 @@ const SECTIONS = [
     ]
   },
   {
-    id: 'G', title: 'FRONTEND — API-Anbindung', week: '12.–16. Mai',
+    id: 'G', title: 'FRONTEND — API-Anbindung', week: '12.–16. Mai (KW 20)',
     info: 'React-Frontend wird an das PHP-Backend angebunden. credentials: include bei allen Requests.',
     tasks: [
       { id: 'G-01', name: 'API-Client & Org-Config laden', type: 'PROMPT', note: 'credentials: "include" bei allen fetch-Calls (JWT im HttpOnly-Cookie)' },
@@ -394,7 +396,7 @@ const SECTIONS = [
     ]
   },
   {
-    id: 'H', title: 'UI-QUALITÄT — Bugs & Design', week: '12.–23. Mai',
+    id: 'H', title: 'UI-QUALITÄT — Bugs & Design', week: '12.–16. Mai (KW 20)',
     info: 'Design Tokens (CSS Custom Properties) für Tenant-Farbanpassung. Mobile-First.',
     tasks: [
       { id: 'H-01', name: 'Bekannte Bugs fixen', type: 'PROMPT' },
@@ -407,7 +409,7 @@ const SECTIONS = [
     ]
   },
   {
-    id: 'I', title: 'FLOW-SYSTEM — Templates, Trigger, Smart Defaults', week: '19.–23. Mai',
+    id: 'I', title: 'FLOW-SYSTEM — Templates, Trigger, Smart Defaults', week: '19.–23. Mai (KW 21)',
     info: 'Projekt-Templates für Abläufe innerhalb einer Org (nicht zu verwechseln mit Org-Templates in O).',
     tasks: [
       { id: 'I-01', name: 'Template-System Backend', type: 'PROMPT' },
@@ -417,7 +419,7 @@ const SECTIONS = [
     ]
   },
   {
-    id: 'N', title: 'MODUL-BUILDER — Custom Tabs & Felder', week: '19.–23. Mai',
+    id: 'N', title: 'MODUL-BUILDER — Custom Tabs & Felder', week: '19.–23. Mai (KW 21)',
     info: 'Org-Owner kann eigene Tabs mit Custom Fields anlegen. Tenant-isoliert.',
     tasks: [
       { id: 'N-01', name: 'Modul-Builder Backend', type: 'PROMPT', neu: true },
@@ -425,7 +427,7 @@ const SECTIONS = [
     ]
   },
   {
-    id: 'O', title: 'ORG-TEMPLATES — KNH als Template #1', week: '19.–23. Mai',
+    id: 'O', title: 'ORG-TEMPLATES — KNH als Template #1', week: '19.–23. Mai (KW 21)',
     info: 'Org-Setup-Vorlagen. KNH ist Pilot und gleichzeitig das erste Community-Template.',
     tasks: [
       { id: 'O-01', name: 'Template-System Backend (org_templates Tabelle, apply-template API)', type: 'PROMPT', neu: true },
@@ -444,7 +446,7 @@ const SECTIONS = [
     ]
   },
   {
-    id: 'J', title: 'DSGVO & COMPLIANCE', week: '19.–23. Mai',
+    id: 'J', title: 'DSGVO & COMPLIANCE', week: '19.–23. Mai (KW 21)',
     info: 'Art. 17 (Löschung) + Art. 20 (Datenportabilität). 30-Tage-Cooldown vor Löschung.',
     tasks: [
       { id: 'J-01', name: 'Export & Löschung (Datenexport JSON, Anonymisierung)', type: 'PROMPT', sec: true, note: 'Dateien + Feed-Posts + avatar + user_agent müssen bei Löschung erfasst werden' },
@@ -452,7 +454,7 @@ const SECTIONS = [
     ]
   },
   {
-    id: 'K', title: 'PRODUKTION & HARDENING', week: '19.–23. Mai',
+    id: 'K', title: 'PRODUKTION & HARDENING', week: '19.–23. Mai (KW 21)',
     info: 'Security Header, Rate Limiting, Monitoring. Alle Security-Agent-Findings umgesetzt.',
     tasks: [
       { id: 'K-01', name: 'Security Headers + Rate Limiting (alle Endpunkte)', type: 'PROMPT', sec: true, note: 'audit_log: anonymisieren nach 90d, löschen nach 3 Jahren (nicht 90d)' },
@@ -468,18 +470,6 @@ const SECTIONS = [
       { id: 'L-03', name: 'Ersten Owner-Account (Vorstand) aktivieren', type: 'DU' },
       { id: 'L-04', name: 'IS_LIVE = true setzen', type: 'DU' },
       { id: 'L-05', name: 'Launch-Checkliste (35+ Tabellen, alle Sections)', type: 'REVIEW' },
-      { id: 'L-06', name: 'seed_test_users.php NICHT auf Production — prüfen via SQL', type: 'REVIEW', sec: true, note: "SELECT email FROM personen_kontakt WHERE email LIKE '%@test.flovr.de%' → muss 0 Zeilen ergeben" },
-    ]
-  },
-  {
-    id: 'T', title: 'TRIAL-SYSTEM — SaaS Self-Service (Post-KNH-Launch)', week: 'ab Juli',
-    info: 'Self-Service Registrierung, Trial-Ablauf, Stripe-Anbindung. Erst nach KNH-Launch umsetzen.',
-    tasks: [
-      { id: 'T-01a', name: 'Trial-Schema-Migration ausgeführt (004_trial_system.sql)', type: 'DU', note: 'Neue Spalten in organizations: trial_ends_at, is_trial, stripe_customer_id, stripe_subscription_id' },
-      { id: 'T-01b', name: 'trial.php Middleware aktiv + getestet', type: 'PROMPT + DU', sec: true, note: 'Abgelaufenes Trial → 402 Payment Required; aktives Trial → weiter' },
-      { id: 'T-02a', name: 'POST /api/register implementiert', type: 'PROMPT', note: 'Self-Service: Org + Owner + Trial in einer Transaktion anlegen' },
-      { id: 'T-02b', name: 'Stripe angebunden (stripe/stripe-php + STRIPE_SECRET_KEY)', type: 'PROMPT + DU', sec: true, note: 'Customer bei Registrierung anlegen; stripe_customer_id in organizations speichern' },
-      { id: 'T-02c', name: 'Self-Service Registrierung live getestet', type: 'REVIEW', note: 'Neue Org registrieren → Login → /api/auth/me → Trial-Status prüfen' },
     ]
   },
   {
