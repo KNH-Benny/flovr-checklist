@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flovr v2.0 — Aufbau-Checkliste (Stand: Mai 2026)</title>
+<title>Flovr v3.6 — Aufbau-Checkliste (Stand: Mai 2026)</title>
 <style>
   :root {
     --bg: #0A1A1A;
@@ -284,7 +284,7 @@
     <div class="logo">
       <div class="logo-dot">F</div>
       <h1>Flovr <span>Aufbau-Checkliste</span></h1>
-      <span class="version-tag">v2.0 · Mai 2026</span>
+      <span class="version-tag">v3.6 · Mai 2026</span>
     </div>
     <div class="stats">
       <div class="stat">
@@ -313,6 +313,9 @@
 
 <script>
 const SECTIONS = [
+  // ══════════════════════════════════════════════════════
+  //  A–H  ABGESCHLOSSEN
+  // ══════════════════════════════════════════════════════
   {
     id: 'A', title: 'INFRASTRUKTUR — VPS & Server-Setup', week: '✅ Abgeschlossen',
     info: 'Einmalige Server-Grundlage. DU-Schritte: manuell auf VPS. PROMPT-Schritte: Claude schreibt Setup-Scripts die du dann ausführst.',
@@ -335,9 +338,9 @@ const SECTIONS = [
     id: 'B', title: 'DATENBANK — Schema & Migration', week: '✅ Abgeschlossen',
     info: 'MariaDB Schema mit Multi-Tenant-Isolation. tenant_id in jeder Tabelle — Pflicht.',
     tasks: [
-      { id: 'B-01', name: 'Vollständiges MariaDB Schema (35+ Tabellen)', type: 'PROMPT', fix: true, note: 'BUGFIX v1.6: organizations statt tenants als FK-Ziel, projekte statt projects, personen_kontakt UNIQUE per tenant' },
+      { id: 'B-01', name: 'Vollständiges MariaDB Schema (38+ Tabellen)', type: 'PROMPT', fix: true, note: 'BUGFIX v1.6: organizations statt tenants als FK-Ziel, projekte statt projects, personen_kontakt UNIQUE per tenant' },
       { id: 'B-02', name: 'Seed-Daten (Rollen + Presets)', type: 'PROMPT' },
-      { id: 'B-03', name: 'Migrations-System', type: 'PROMPT', fix: true, note: 'BUGFIX v1.6: Multi-Statement Split, Transaction-Wrapping, CLI-only Check, flovr_admin User' },
+      { id: 'B-03', name: 'Migrations-System (4 Migrations, flovr_admin User)', type: 'PROMPT', fix: true, note: 'BUGFIX v1.6: Multi-Statement Split, Transaction-Wrapping, CLI-only Check, flovr_admin User' },
     ]
   },
   {
@@ -347,19 +350,19 @@ const SECTIONS = [
       { id: 'C-01', name: 'Verzeichnis-Struktur + Router + CORS', type: 'PROMPT', sec: true, note: 'APCu-Cache für CORS-Domain-Lookup, HTTP-Methoden-Whitelist' },
       { id: 'C-02', name: 'Auth-System (vollständig)', type: 'PROMPT', sec: true, fix: true, note: 'BUGFIX v1.6: tenant_id als "tid"-Claim im JWT PFLICHT, firebase/php-jwt ^6.10 pinnen' },
       { id: 'C-03', name: 'Dev-Bootstrap — Erster Owner-Account & Staging-Testdaten', type: 'PROMPT + DU', note: 'Owner-Account anlegen, Demo-Mitglieder für Staging' },
-      { id: 'C-03b', name: 'Rollen-Test (alle 7 Rollen auf Staging durchspielen)', type: 'REVIEW', note: '⏳ Offen — manuell auf Staging testen: guest→kernmitglied→pl→vorstand→owner' },
+      { id: 'C-03b', name: 'Rollen-Test (alle Rollen auf Staging durchspielen)', type: 'REVIEW', neu: true, note: '⏳ Erst nach S abgeschlossen — org_roles Tabelle, alle Capabilities testen: guest → member → manager → admin → owner' },
     ]
   },
   {
-    id: 'D', title: 'SECURITY HOTFIXES — Frontend', week: '⏳ Nächster Schritt',
+    id: 'D', title: 'SECURITY HOTFIXES — Frontend', week: '⏳ Offen',
     info: 'Sicherheitskritische Bereinigung der KNH-App bevor sie als Flovr-App weitergebaut wird.',
     tasks: [
-      { id: 'D-01', name: 'Demo-Users entfernen, Google Fonts lokal hosten', type: 'PROMPT', sec: true, note: '⏳ Nächster Schritt — Hardcodierte Passwörter raus, kein Google CDN (DSGVO)' },
-      { id: 'D-02', name: 'Git History bereinigen (leaked Apps Script URL)', type: 'DU', sec: true, note: '⏳ Braucht lokales Terminal — CI deaktivieren → filter-repo → force push → CI reaktivieren' },
+      { id: 'D-01', name: 'Demo-Users entfernen, Google Fonts lokal hosten', type: 'PROMPT', sec: true, note: 'Hardcodierte Passwörter raus, kein Google CDN (DSGVO)' },
+      { id: 'D-02', name: 'Git History bereinigen (leaked Apps Script URL)', type: 'DU', sec: true, note: 'Braucht lokales Terminal — CI deaktivieren → filter-repo → force push → CI reaktivieren' },
     ]
   },
   {
-    id: 'E', title: 'STORAGE — Multi-Provider Datei-Verwaltung', week: '05.–09. Mai',
+    id: 'E', title: 'STORAGE — Multi-Provider Datei-Verwaltung', week: '✅ Abgeschlossen',
     info: 'Multi-Provider Storage: Local, Google Drive, Dropbox, S3 — per Tenant konfigurierbar im Owner Panel. Credentials AES-256-GCM verschlüsselt in DB.',
     tasks: [
       { id: 'E-00', name: 'DB-Migration: organizations.storage_provider + storage_config', type: 'DU', note: 'ALTER TABLE organizations ADD storage_provider ENUM + storage_config JSON (AES-encrypted)' },
@@ -370,8 +373,8 @@ const SECTIONS = [
     ]
   },
   {
-    id: 'F', title: 'CORE REST API — Alle Endpunkte', week: '05.–09. Mai',
-    info: 'REGEL: Jedes SELECT/UPDATE/DELETE braucht WHERE tenant_id = $auth[\'tenant_id\']. Keine Ausnahmen.',
+    id: 'F', title: 'CORE REST API — Alle Endpunkte', week: '✅ Abgeschlossen',
+    info: 'REGEL: Jedes SELECT/UPDATE/DELETE braucht WHERE tenant_id = $auth[\'tenant_id\']. Keine Ausnahmen. ~120 Endpunkte implementiert.',
     tasks: [
       { id: 'F-01', name: 'Organisation & Org-Config', type: 'PROMPT', note: 'Public-Endpunkt: Tenant-Zuordnung über Request-Domain (nicht Parameter!)' },
       { id: 'F-02', name: 'Mitglieder-Endpunkte', type: 'PROMPT', sec: true },
@@ -386,18 +389,18 @@ const SECTIONS = [
     ]
   },
   {
-    id: 'G', title: 'FRONTEND — API-Anbindung', week: '12.–16. Mai (KW 20)',
+    id: 'G', title: 'FRONTEND — API-Anbindung', week: '✅ Abgeschlossen',
     info: 'React-Frontend wird an das PHP-Backend angebunden. credentials: include bei allen Requests.',
     tasks: [
-      { id: 'G-01', name: 'API-Client & Org-Config laden', type: 'PROMPT', note: 'credentials: "include" bei allen fetch-Calls (JWT im HttpOnly-Cookie)' },
+      { id: 'G-01', name: 'API-Client & Org-Config laden (useOrgConfig, useTerm)', type: 'PROMPT', note: 'credentials: "include" bei allen fetch-Calls (JWT im HttpOnly-Cookie)' },
       { id: 'G-02', name: 'Auth-Anbindung (Login/Logout/Refresh)', type: 'PROMPT', sec: true },
       { id: 'G-03', name: 'Projekte, Schichten, Feed von API laden', type: 'PROMPT' },
       { id: 'G-04', name: 'Mitglieder, Aufgaben, Protokolle, Inventar', type: 'PROMPT' },
     ]
   },
   {
-    id: 'H', title: 'UI-QUALITÄT — Bugs & Design', week: '12.–16. Mai (KW 20)',
-    info: 'Design Tokens (CSS Custom Properties) für Tenant-Farbanpassung. Mobile-First.',
+    id: 'H', title: 'UI-QUALITÄT — Bugs & Design System', week: '✅ Abgeschlossen',
+    info: 'Design Tokens (CSS Custom Properties) für Tenant-Farbanpassung. Mobile-First. H-01 bis H-08 alle abgeschlossen.',
     tasks: [
       { id: 'H-01', name: 'Bekannte Bugs fixen', type: 'PROMPT' },
       { id: 'H-02', name: 'Next-Level UI — Design System + Tokens', type: 'PROMPT', note: 'CSS Custom Properties → Tenant-Farben aus org_config dynamisch anwenden' },
@@ -406,39 +409,138 @@ const SECTIONS = [
       { id: 'H-05', name: 'Mobile-Optimierung & Performance', type: 'PROMPT' },
       { id: 'H-06', name: 'Social Media Tab — Redaktionskalender & Kanban', type: 'PROMPT', neu: true },
       { id: 'H-07', name: 'Team-Workspace — Eigenständiger Bereich pro Team', type: 'PROMPT', neu: true },
-      { id: 'H-08', name: 'Design System: Dark Teal Theming + Responsive Desktop-Layout', type: 'PROMPT', neu: true, note: 'Sidebar (≥1024px), Modal-Popups (Desktop) vs. Bottom-Sheets (Mobile), alle Komponenten. --primary aus org_config. Voraussetzung: H-01–H-07 committed.' },
+      { id: 'H-08', name: 'Design System: Dark Teal Theming + Responsive Desktop-Layout', type: 'PROMPT', neu: true, note: 'Sidebar (≥1024px), Modal-Popups (Desktop) vs. Bottom-Sheets (Mobile), alle Komponenten. --primary aus org_config.' },
     ]
   },
+
+  // ══════════════════════════════════════════════════════
+  //  I  FLOW-SYSTEM  (in progress)
+  // ══════════════════════════════════════════════════════
   {
-    id: 'I', title: 'FLOW-SYSTEM — Templates, Trigger, Smart Defaults', week: '19.–23. Mai (KW 21)',
-    info: 'Projekt-Templates für Abläufe innerhalb einer Org (nicht zu verwechseln mit Org-Templates in O).',
+    id: 'I', title: 'FLOW-SYSTEM — Templates, Trigger, Smart Defaults', week: '⏳ KW 21 — läuft',
+    info: 'Projekt-Templates für Abläufe innerhalb einer Org. I-01 ✅ I-02 ✅ — I-03 und I-04 stehen noch an.',
     tasks: [
-      { id: 'I-01', name: 'Template-System Backend', type: 'PROMPT' },
-      { id: 'I-02', name: 'Template-Auswahl im Projekt-Wizard', type: 'PROMPT' },
-      { id: 'I-03', name: 'Automation-Trigger (Connected Actions)', type: 'PROMPT' },
-      { id: 'I-04', name: 'Smart Defaults & Progressive Disclosure', type: 'PROMPT' },
+      { id: 'I-01', name: 'Template-System Backend (projekt_templates Tabelle, apply-API)', type: 'PROMPT' },
+      { id: 'I-02', name: 'Automation-Trigger (Connected Actions — backend/helpers/triggers.php)', type: 'PROMPT', note: '✅ Fertig — 5 Trigger: nachProjektAngelegt, nachSchichtVoll, nachAufgabeErledigt, nachProtokollFinalisiert, nachProjektArchiviert. Alle try/catch isoliert.' },
+      { id: 'I-03', name: 'Template-Auswahl im Projekt-Wizard (Frontend)', type: 'PROMPT' },
+      { id: 'I-04', name: 'Smart Defaults & Progressive Disclosure', type: 'PROMPT', note: 'Felder erst einblenden wenn relevant — Schritt-für-Schritt Formulare' },
+    ]
+  },
+
+  // ══════════════════════════════════════════════════════
+  //  J K  — DSGVO & HARDENING  (vor Launch Pflicht)
+  // ══════════════════════════════════════════════════════
+  {
+    id: 'J', title: 'DSGVO & COMPLIANCE', week: 'KW 21',
+    info: 'Art. 17 (Löschung) + Art. 20 (Datenportabilität). Pflicht vor Production-Launch. Stub backend/routes/dsgvo.php → 501.',
+    tasks: [
+      { id: 'J-01', name: 'Export & Löschung (Datenexport JSON, 30-Tage-Cooldown, Anonymisierung)', type: 'PROMPT', sec: true, note: 'Dateien + Feed-Posts + avatar + user_agent müssen bei Löschung erfasst werden' },
+      { id: 'J-02', name: 'DSGVO-UI im Ich-Tab (Export-Button, Lösch-Dialog)', type: 'PROMPT' },
     ]
   },
   {
-    id: 'N', title: 'MODUL-BUILDER — Custom Tabs & Felder', week: '19.–23. Mai (KW 21)',
-    info: 'Org-Owner kann eigene Tabs mit Custom Fields anlegen. Tenant-isoliert.',
+    id: 'K', title: 'PRODUKTION & HARDENING', week: 'KW 21',
+    info: 'Security Header, Rate Limiting, Monitoring. Alle Security-Agent-Findings umgesetzt.',
+    tasks: [
+      { id: 'K-01', name: 'Security Headers + Rate Limiting (alle Endpunkte)', type: 'PROMPT', sec: true, note: 'audit_log: anonymisieren nach 90d, löschen nach 3 Jahren (nicht 90d)' },
+      { id: 'K-02', name: 'Monitoring & Health (public: nur {"status":"ok"})', type: 'PROMPT', note: 'Details NIEMALS im öffentlichen Health-Endpunkt — kein db/storage Status exposed' },
+    ]
+  },
+
+  // ══════════════════════════════════════════════════════
+  //  R  NEUTRALITÄTS-AUDIT  (Flovr muss KNH-frei sein)
+  // ══════════════════════════════════════════════════════
+  {
+    id: 'R', title: 'NEUTRALITÄTS-AUDIT — Flovr-Readiness', week: 'KW 21', neu: true,
+    info: 'Sicherstellen dass Flovr generisch verkaufbar ist — kein KNH-Code in der Plattform, alles config-driven. Voraussetzung für Template-Marktplatz und SaaS-Öffnung.',
+    tasks: [
+      { id: 'R-01', name: 'KNH-Terminologie-Scan — alle hardcodierten Begriffe durch useTerm() / orgConfig ersetzen', type: 'PROMPT', neu: true, note: 'Grep nach: veranstaltung, schicht, ag, kampagne, lineup, crew — alles config-driven' },
+      { id: 'R-02', name: 'Datenbankschema-Audit — ENUMs neutralisieren', type: 'PROMPT', neu: true, note: 'projekt_typ ENUM → VARCHAR(50), org_type nicht hardcoded, alle KNH-spezifischen Defaults entfernen' },
+      { id: 'R-03', name: 'Frontend-Neutralitäts-Check — Labels & Texte', type: 'PROMPT', neu: true, sec: true, note: 'Alle hardcodierten KNH-Texte ersetzen. Felder über orgConfig.projektFelder statt useProjektFelder-Hook' },
+      { id: 'R-04', name: 'Seed-Daten-Trennung — KNH-Seed isolieren', type: 'PROMPT', neu: true, note: 'backend/sql/seed_knh_template.sql für KNH-spezifisches, backend/sql/seed.sql bleibt neutral' },
+      { id: 'R-05', name: 'Verkaufs-Readiness-Test — neues Org-Onboarding ohne KNH-Bezug', type: 'REVIEW', neu: true, note: 'Test-Onboarding für "Gaming Community" Template — keine KNH-Begriffe sichtbar' },
+    ]
+  },
+
+  // ══════════════════════════════════════════════════════
+  //  S  FLEXIBLES ROLLEN-SYSTEM  (großer Umbau)
+  // ══════════════════════════════════════════════════════
+  {
+    id: 'S', title: 'FLEXIBLES ROLLEN-SYSTEM — Org-konfigurierbar', week: 'KW 21–22', neu: true,
+    info: 'Weg von fixierten Level 1–7. Jede Org definiert eigene Rollen + Capabilities. org_roles + role_capabilities Tabellen. Migration 007_flexible_roles.sql.',
+    tasks: [
+      { id: 'S-01', name: 'DB-Migration 007: org_roles + role_capabilities Tabellen', type: 'PROMPT', neu: true, note: 'org_roles: id, tenant_id, name, slug, level TINYINT, is_owner, is_default, color, sort_order. role_capabilities: id, tenant_id, role_id, capability VARCHAR(100)' },
+      { id: 'S-02', name: 'PHP Backend — require_capability() Middleware', type: 'PROMPT', neu: true, sec: true, note: 'APCu-Cache (60s TTL, invalidieren bei Rollen-Änderung). Ersetzt require_min_role(). Capabilities: read_members, create_projects, manage_members, manage_org, etc.' },
+      { id: 'S-03', name: 'Seed-Daten: Standard-Rollen als Org-Defaults', type: 'PROMPT', neu: true, note: 'Owner, Admin, Manager, Member, Guest — als Startpunkt, überschreibbar. Template-Rollen für kulturverein.' },
+      { id: 'S-04', name: 'Owner-Panel: Rollen-Editor (Rollen + Capabilities UI)', type: 'PROMPT', neu: true, note: 'Rollen anlegen/umbenennen/löschen. Capabilities-Matrix per Rolle. Farbe und Sortierung.' },
+      { id: 'S-05', name: 'JWT-Claim-Update — capabilities Array im Token', type: 'PROMPT', neu: true, sec: true, note: 'Statt role_level → capabilities: ["read_members","create_projects",...]. Token-Refresh nach Rollen-Änderung erzwingen.' },
+      { id: 'S-06', name: 'Frontend — useCapabilities() Hook, alle Level-Checks ersetzen', type: 'PROMPT', neu: true, note: 'useCapabilities().can("manage_members") statt user.role_level >= 5. Alle Komponenten updaten.' },
+    ]
+  },
+
+  // ══════════════════════════════════════════════════════
+  //  M  MASTER-DEV-SYSTEM  (Superadmin-Infrastruktur)
+  // ══════════════════════════════════════════════════════
+  {
+    id: 'M', title: 'MASTER-DEV-SYSTEM — Plattform-Superadmin', week: 'KW 22', neu: true,
+    info: 'Separates Admin-System außerhalb der Org-Struktur. Eigene Tabelle, eigener Login, eigenes Panel. Voraussetzung: S abgeschlossen (Rollen-System stabil).',
+    tasks: [
+      { id: 'M-01', name: 'platform_admins Tabelle + Seed (Master-Dev Account)', type: 'PROMPT', neu: true, sec: true, note: 'Tabelle: id, email, password_hash (bcrypt cost 12), name, level (1=Support, 2=Master-Dev), created_at. Erster Account via CLI-Seed.' },
+      { id: 'M-02', name: 'Platform-Admin API + Login (JWT type=platform_admin)', type: 'PROMPT', neu: true, sec: true, note: 'POST /api/platform/login → JWT mit type=platform_admin Claim. Login: https://flovr.de/platform/login. Getrennte Middleware, kein Cross-Org-Zugriff ohne explizite Query.' },
+      { id: 'M-03', name: 'Master-Dev Panel — Org-Übersicht, Tenant-Management, Template-Import', type: 'PROMPT', neu: true, note: 'Alle Orgs sehen, Details öffnen, Pilot-Ablauf begleiten. Template-Import für O-02.' },
+    ]
+  },
+
+  // ══════════════════════════════════════════════════════
+  //  O  ORG-TEMPLATES  +  T  TRIAL-SYSTEM
+  // ══════════════════════════════════════════════════════
+  {
+    id: 'O', title: 'ORG-TEMPLATES — KNH als Template #1', week: 'KW 22',
+    info: 'Org-Setup-Vorlagen. KNH ist Pilot und gleichzeitig das erste Community-Template. Voraussetzung: R (Audit bestanden) und M (Template-Import via Admin Panel).',
+    tasks: [
+      { id: 'O-01', name: 'org_templates Tabelle + apply-template API', type: 'PROMPT', neu: true },
+      { id: 'O-02', name: 'KNH Kulturverein Template — aus echter Pilot-Konfiguration extrahiert', type: 'PROMPT', neu: true, note: 'Terminologie, Module, Onboarding-Projekte, Skills, Rollen (aus org_roles) — in seed_knh_template.sql' },
+      { id: 'O-03', name: 'Onboarding-Flow mit Template-Auswahl', type: 'PROMPT', neu: true, note: 'Rate-Limit: 1 Org/IP/Tag, E-Mail-Verifikation vor Aktivierung' },
+    ]
+  },
+  {
+    id: 'T', title: 'TRIAL-SYSTEM — Self-Service-Registrierung', week: 'KW 22', neu: true,
+    info: 'Neue Orgs können sich selbst registrieren und Flovr 14 Tage testen — ohne manuellen Admin-Eingriff.',
+    tasks: [
+      { id: 'T-01', name: 'Trial-Infrastruktur (trial_expires_at, is_trial, Cron für Ablauf)', type: 'PROMPT', neu: true, sec: true, note: 'organizations: +trial_expires_at DATETIME, +is_trial BOOL. Cron täglich: abgelaufene Trials deaktivieren. E-Mail-Warnung 3 Tage vor Ablauf.' },
+      { id: 'T-02', name: 'Self-Service-Registrierung (Org-Onboarding ohne Admin)', type: 'PROMPT', neu: true, note: 'POST /api/register/org → Org anlegen, Template wählen, E-Mail-Verifikation, Trial starten. Rate-Limit: 1 Org/IP/Tag.' },
+    ]
+  },
+
+  // ══════════════════════════════════════════════════════
+  //  L  KNH-LAUNCH  (Ziel: Ende Mai 2026)
+  // ══════════════════════════════════════════════════════
+  {
+    id: 'L', title: 'KNH-LAUNCH — Ende Mai 2026', week: 'Ende Mai',
+    info: 'Datenmigration von EasyVerein, KNH-Config, Launch. Ziel: knh.flovr.de live Ende Mai 2026. Voraussetzung: alle Sektionen I–T abgeschlossen.',
+    tasks: [
+      { id: 'L-01', name: 'EasyVerein-Import (alle KNH-Mitglieder)', type: 'PROMPT + DU' },
+      { id: 'L-02', name: 'KNH Org-Config einrichten (#5B1EAB, Inter Display, KNH-Template)', type: 'DU' },
+      { id: 'L-03', name: 'Ersten Owner-Account (Vorstand) aktivieren', type: 'DU' },
+      { id: 'L-04', name: 'IS_LIVE = true setzen', type: 'DU' },
+      { id: 'L-05', name: 'Launch-Checkliste (alle Sektionen, 38+ Tabellen, Security bestanden)', type: 'REVIEW' },
+    ]
+  },
+
+  // ══════════════════════════════════════════════════════
+  //  N P  POST-LAUNCH  (nach Pilot-Feedback)
+  // ══════════════════════════════════════════════════════
+  {
+    id: 'N', title: 'MODUL-BUILDER — Custom Tabs & Felder', week: 'ab Juni (nach Pilot)',
+    info: 'Org-Owner kann eigene Tabs mit Custom Fields anlegen. Tenant-isoliert. Erst nach KNH-Usertest sinnvoll.',
     tasks: [
       { id: 'N-01', name: 'Modul-Builder Backend', type: 'PROMPT', neu: true },
       { id: 'N-02', name: 'Modul-Builder Frontend (Owner-Panel)', type: 'PROMPT', neu: true },
     ]
   },
   {
-    id: 'O', title: 'ORG-TEMPLATES — KNH als Template #1', week: '19.–23. Mai (KW 21)',
-    info: 'Org-Setup-Vorlagen. KNH ist Pilot und gleichzeitig das erste Community-Template.',
-    tasks: [
-      { id: 'O-01', name: 'Template-System Backend (org_templates Tabelle, apply-template API)', type: 'PROMPT', neu: true },
-      { id: 'O-02', name: 'KNH Kulturverein Template aus echter App extrahiert', type: 'PROMPT', neu: true, note: '10 Event-Typen, Permissions-Matrix, 15 Skills — aus knh-app extrahiert' },
-      { id: 'O-03', name: 'Onboarding-Flow mit Template-Auswahl', type: 'PROMPT', neu: true, note: 'Rate-Limit: 1 Org/IP/Tag, E-Mail-Verifikation vor Aktivierung' },
-    ]
-  },
-  {
-    id: 'P', title: 'COMMUNITY MARKET — Template-Marktplatz', week: '26.–30. Mai',
-    info: 'Öffentlicher Template-Marktplatz mit klickbarer Live-Preview. Virales Wachstum.',
+    id: 'P', title: 'COMMUNITY MARKET — Template-Marktplatz', week: 'ab Juni (nach Pilot)',
+    info: 'Öffentlicher Template-Marktplatz mit klickbarer Live-Preview. Virales Wachstum. Voraussetzung: O abgeschlossen, mindestens 2 Tenants aktiv.',
     tasks: [
       { id: 'P-01', name: 'Template-Registry Backend (preview_demo_token, Sandboxing)', type: 'PROMPT', neu: true, sec: true, note: 'Preview MUSS vollständig isoliert sein — keine echten Tenant-Daten' },
       { id: 'P-02', name: 'Clickbarer Preview — Live-Demo ohne Account', type: 'PROMPT', neu: true },
@@ -446,41 +548,18 @@ const SECTIONS = [
       { id: 'P-04', name: 'Virale Loops — KNH lädt andere Vereine ein', type: 'PROMPT', neu: true },
     ]
   },
+
+  // ══════════════════════════════════════════════════════
+  //  Q  ERWEITERUNGEN  (ehemals M — Post-Launch Nice-to-have)
+  // ══════════════════════════════════════════════════════
   {
-    id: 'J', title: 'DSGVO & COMPLIANCE', week: '19.–23. Mai (KW 21)',
-    info: 'Art. 17 (Löschung) + Art. 20 (Datenportabilität). 30-Tage-Cooldown vor Löschung.',
+    id: 'Q', title: 'ERWEITERUNGEN — Post-Launch Nice-to-have', week: 'ab Juli',
+    info: 'Nicht für KNH-Launch benötigt. Nach Pilot-Feedback und stabilem Betrieb umsetzen.',
     tasks: [
-      { id: 'J-01', name: 'Export & Löschung (Datenexport JSON, Anonymisierung)', type: 'PROMPT', sec: true, note: 'Dateien + Feed-Posts + avatar + user_agent müssen bei Löschung erfasst werden' },
-      { id: 'J-02', name: 'DSGVO-UI im Ich-Tab (Export-Button, Lösch-Dialog)', type: 'PROMPT' },
-    ]
-  },
-  {
-    id: 'K', title: 'PRODUKTION & HARDENING', week: '19.–23. Mai (KW 21)',
-    info: 'Security Header, Rate Limiting, Monitoring. Alle Security-Agent-Findings umgesetzt.',
-    tasks: [
-      { id: 'K-01', name: 'Security Headers + Rate Limiting (alle Endpunkte)', type: 'PROMPT', sec: true, note: 'audit_log: anonymisieren nach 90d, löschen nach 3 Jahren (nicht 90d)' },
-      { id: 'K-02', name: 'Monitoring & Health (public: nur {"status":"ok"})', type: 'PROMPT', note: 'Details NIEMALS im öffentlichen Health-Endpunkt — kein db/storage Status exposed' },
-    ]
-  },
-  {
-    id: 'L', title: 'KNH-LAUNCH — Ende Mai', week: '26.–30. Mai',
-    info: 'Datenmigration von EasyVerein, KNH-Config, Launch. Ziel: Ende Mai live.',
-    tasks: [
-      { id: 'L-01', name: 'EasyVerein-Import (alle KNH-Mitglieder)', type: 'PROMPT + DU' },
-      { id: 'L-02', name: 'KNH Org-Config einrichten (#5B1EAB, Inter Display)', type: 'DU' },
-      { id: 'L-03', name: 'Ersten Owner-Account (Vorstand) aktivieren', type: 'DU' },
-      { id: 'L-04', name: 'IS_LIVE = true setzen', type: 'DU' },
-      { id: 'L-05', name: 'Launch-Checkliste (35+ Tabellen, alle Sections)', type: 'REVIEW' },
-    ]
-  },
-  {
-    id: 'M', title: 'ERWEITERUNGEN — Post-Launch', week: 'ab Juni',
-    info: 'Nicht für KNH-Launch benötigt. Nach Pilot-Feedback umsetzen.',
-    tasks: [
-      { id: 'M-01', name: 'Chat-Funktion (Short-Polling → WebSocket)', type: 'PROMPT', note: 'Short-Polling: ETag/304 um DB-Last zu reduzieren' },
-      { id: 'M-02', name: 'Finanz-Tool-Koop (SEPA-Alternative)', type: 'PROMPT' },
-      { id: 'M-04', name: 'Kalender-API-Anbindung', type: 'PROMPT' },
-      { id: 'M-05', name: 'Meetings & Audio-Transkription (Anthropic API)', type: 'PROMPT', note: 'AVV mit Anthropic wenn aktiviert (DSGVO Drittland-Transfer USA)' },
+      { id: 'Q-01', name: 'Chat-Funktion (Short-Polling → WebSocket)', type: 'PROMPT', note: 'Short-Polling: ETag/304 um DB-Last zu reduzieren' },
+      { id: 'Q-02', name: 'Finanz-Tool-Koop (SEPA-Alternative)', type: 'PROMPT' },
+      { id: 'Q-04', name: 'Kalender-API-Anbindung', type: 'PROMPT' },
+      { id: 'Q-05', name: 'Meetings & Audio-Transkription (Anthropic API)', type: 'PROMPT', note: 'AVV mit Anthropic wenn aktiviert (DSGVO Drittland-Transfer USA)' },
     ]
   },
 ];
