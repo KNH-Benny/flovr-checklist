@@ -479,11 +479,86 @@ const SECTIONS = [
   },
 
   // ══════════════════════════════════════════════════════
+  //  U  CONFIG-KANAL  (useOrgConfig kennt alles)
+  // ══════════════════════════════════════════════════════
+  {
+    id: 'U', title: 'CONFIG-KANAL — useOrgConfig kennt alles', week: 'KW 22', neu: true,
+    info: 'Einheitlicher Config-Kanal für die gesamte App. defaultConfig.js, useOrgConfig(), useTerm(), useAufgabeStatus(). Vorbedingung für W (Owner-Panel) und Y (KNH-Template Seal).',
+    tasks: [
+      { id: 'U-01', name: 'defaultConfig.js um alle fehlenden Felder erweitern (protokoll_typen, aufgabe_status, inventar_kategorien, membership_tiers, screening_typen, terms)', type: 'PROMPT', neu: true, note: 'Alle Defaults generisch — kein KNH-Begriff, kein Vereinsname als Default.' },
+      { id: 'U-02', name: 'useOrgConfig() Hook erweitern — merge mit defaultConfig, Cache-Invalidierung', type: 'PROMPT', neu: true, note: 'Cache: localStorage 5 min. Invalidierung via window.dispatchEvent(new Event(\'orgconfig:invalidate\')) nach Owner-Panel Save.' },
+      { id: 'U-03', name: 'useTerm(key, fallback) Hook — austauschbare UI-Texte', type: 'PROMPT', neu: true, note: 'useTerm(\'mitglieder\', \'Mitglieder\') → liefert org-spezifischen Begriff. Wird in V-07 in alle Komponenten eingebaut.' },
+      { id: 'U-04', name: 'useAufgabeStatus() Hook — ersetzt AUFGABE_STATUS Konstante überall', type: 'PROMPT', neu: true, note: 'Einmalige Definition, kein Duplizieren mehr zwischen App.jsx und ProjectManager.jsx.' },
+    ]
+  },
+
+  // ══════════════════════════════════════════════════════
+  //  X  CONFIG-SYNC API  (Backend kennt dieselbe Sprache)
+  // ══════════════════════════════════════════════════════
+  {
+    id: 'X', title: 'CONFIG-SYNC API — Owner-Panel ↔ Backend', week: 'KW 22', neu: true,
+    info: 'GET /api/org/config wird um alle neuen Felder erweitert. PATCH /api/admin/organization speichert alles. Voraussetzung für W (Owner-Panel) und Y (KNH-Template).',
+    tasks: [
+      { id: 'X-01', name: 'DB-Migration: extended_config JSON-Spalte in organizations', type: 'PROMPT', neu: true, sec: true, note: 'ALTER TABLE organizations ADD COLUMN extended_config JSON DEFAULT NULL. Migration: 008_extended_config.sql.' },
+      { id: 'X-02', name: 'GET /api/org/config erweitern — alle neuen Felder ausgeben', type: 'PROMPT', neu: true, sec: true, note: 'Merge extended_config mit generischen Defaults. Felder: protokoll_typen, aufgabe_status, inventar_kategorien, membership_tiers, screening_typen, terms, public_screen, mitgliedsantrag.' },
+      { id: 'X-03', name: 'PATCH /api/admin/organization — alle konfigurierbaren Felder speichern', type: 'PROMPT', neu: true, sec: true, note: 'Validierung: JSON-Schema-Check, max. Feldlängen, erlaubte Keys. Audit-Log. Cache-Invalidierung nach Save.' },
+    ]
+  },
+
+  // ══════════════════════════════════════════════════════
+  //  V  HARDCODE-ELIMINATION  (Kein Magic-String mehr)
+  // ══════════════════════════════════════════════════════
+  {
+    id: 'V', title: 'HARDCODE-ELIMINATION — Kein Magic-String, keine KNH-Begriffe', week: 'KW 22', neu: true,
+    info: 'Alle 60+ #0ABFBC-Hardcodes, alle KNH-Texte, alle fixierten Status-Konstanten werden durch Config-Kanal ersetzt. Voraussetzung: U und X abgeschlossen.',
+    tasks: [
+      { id: 'V-00', name: 'Null-Guard-Fixes — 7 bekannte Crashes bei leerer Org beheben', type: 'PROMPT', neu: true, note: 'ProjectManager, Inventar, MitgliedsantragTab, ProtokollTab, EventTab, PublicScreen, SchichtTab — alle ohne gesicherten Fallback auf leere Arrays/Objekte.' },
+      { id: 'V-01', name: 'CSS-Variable-Audit — alle 60+ #0ABFBC Hardcodes auf var(--p) umstellen', type: 'PROMPT', neu: true, note: 'Grep: grep -r "#0ABFBC\|#07908E" src/ → für jede Fundstelle: durch var(--p) bzw. var(--p-dark) ersetzen.' },
+      { id: 'V-02', name: 'Status-Konstanten vereinheitlichen — useAufgabeStatus() überall', type: 'PROMPT', neu: true, note: 'AUFGABE_STATUS in App.jsx (Zeile ~114) und ProjectManager.jsx (Zeile ~45) entfernen. Überall useAufgabeStatus() verwenden.' },
+      { id: 'V-03', name: 'Inventar-Kategorien aus Config — keine hardcodierten Arrays mehr', type: 'PROMPT', neu: true, note: 'Inventar.jsx: KATEGORIEN, KATEGORIE_ICONS, ZUSTAND_CFG durch useOrgConfig().inventar_kategorien ersetzen.' },
+      { id: 'V-04', name: 'Membership-Tiers aus Config — keine fixierten Beitragsstufen', type: 'PROMPT', neu: true, note: 'MitgliedsantragTab: Beitragstypen aus useOrgConfig().membership_tiers. Preise und Beschreibungen sind org-spezifisch.' },
+      { id: 'V-05', name: 'Screening-Fragen aus Config — keine KNH-spezifischen Fragen mehr', type: 'PROMPT', neu: true, note: 'getScreeningFragen() (App.jsx ~1076-1175): ersetzt durch useOrgConfig().screening_typen. KNH-Fragen nur in kulturverein.json.' },
+      { id: 'V-06', name: 'Task-Templates aus Config — 60+ KNH-Tasks aus generischem Code', type: 'PROMPT', neu: true, note: 'TASK_TEMPLATES in ProjectManager.jsx (~67-150): ersetzt durch useOrgConfig().task_templates. KNH-Tasks in kulturverein.json.' },
+      { id: 'V-07', name: 'UI-Texte via useTerm() — alle KNH-Begriffe austauschbar machen', type: 'PROMPT', neu: true, note: 'document.title, alle hardcodierten Bezeichnungen (Crew, Vorstand, Schicht…) durch useTerm() ersetzen. Browser-Tab zeigt org.name.' },
+    ]
+  },
+
+  // ══════════════════════════════════════════════════════
+  //  W  OWNER-PANEL KOMPLETT  (Alles konfigurierbar)
+  // ══════════════════════════════════════════════════════
+  {
+    id: 'W', title: 'OWNER-PANEL KOMPLETT — Alles ohne Entwickler konfigurierbar', week: 'KW 22–23', neu: true,
+    info: 'Jede konfigurierbare Einstellung bekommt eine UI im Owner-Panel. Protokolle, Inventar, Mitgliedschaft, Aufgaben, Event-Typen, Öffentliche Seite, Texte & Sprache. Voraussetzung: U und X abgeschlossen.',
+    tasks: [
+      { id: 'W-01', name: 'Owner-Panel Tab: Protokolle — Protokoll-Typen verwalten', type: 'PROMPT', neu: true, note: 'Typen anlegen/umbenennen/löschen. Emoji und Label pro Typ. Speichern via PATCH /api/admin/organization.' },
+      { id: 'W-02', name: 'Owner-Panel Tab: Inventar — Kategorien und Zustände konfigurieren', type: 'PROMPT', neu: true, note: 'Inventar-Kategorien mit Emoji anlegen. Zustands-Labels anpassen. Alles gespeichert in extended_config.' },
+      { id: 'W-03', name: 'Owner-Panel Tab: Mitgliedschaft — Tiers, Pflichtfelder, Mitgliedsantrag', type: 'PROMPT', neu: true, note: 'Membership-Tiers (Name, Preis, Zeitbeitrag). Pflichtfelder im Antrag. Antrag ein-/ausschalten via Modul-System.' },
+      { id: 'W-04', name: 'Owner-Panel Tab: Aufgaben — Status-Labels und Task-Templates', type: 'PROMPT', neu: true, note: 'Status umbenennen/färben. Org-eigene Task-Templates anlegen. Alle via extended_config.' },
+      { id: 'W-05', name: 'Owner-Panel Tab: Event-Typen — eigene Veranstaltungsarten', type: 'PROMPT', neu: true, note: 'Event-Typen mit Label und Emoji. Org legt fest welche Arten von Events sie haben.' },
+      { id: 'W-06', name: 'Owner-Panel Tab: Öffentliche Seite — Inhalte und Struktur', type: 'PROMPT', neu: true, note: 'Öffentliche Seite ein-/ausschalten via Modul-System. Headline, Beschreibung, Social Links konfigurierbar.' },
+      { id: 'W-07', name: 'Owner-Panel Tab: Texte & Sprache — alle Begriffe anpassen', type: 'PROMPT', neu: true, note: 'Alle useTerm()-Keys mit UI-Feld. Org nennt "Mitglied" → "Spieler" oder "Mitarbeiter". Browser-Titel = org.name.' },
+    ]
+  },
+
+  // ══════════════════════════════════════════════════════
+  //  Y  KNH-TEMPLATE SEAL  (alles KNH in kulturverein.json)
+  // ══════════════════════════════════════════════════════
+  {
+    id: 'Y', title: 'KNH-TEMPLATE SEAL — Alles KNH in kulturverein.json', week: 'KW 23', neu: true,
+    info: 'Alle KNH-spezifischen Inhalte (Tasks, Screening, Terminologie, Branding) leben ausschließlich in kulturverein.json. Generischer Code ist 100% KNH-frei. Voraussetzung: V und W abgeschlossen.',
+    tasks: [
+      { id: 'Y-01', name: 'kulturverein.json — vollständige KNH-Konfiguration', type: 'PROMPT', neu: true, note: 'Alle KNH-Tasks, Screening-Fragen, Membership-Tiers, Protokoll-Typen, Terms (Crew, Vorstand, Schicht), Branding (#5B1EAB, Inter Display), Public-Screen-Config.' },
+      { id: 'Y-02', name: 'POST /api/org/apply-template — erweitert für alle neuen Felder', type: 'PROMPT', neu: true, sec: true, note: 'Liest kulturverein.json, schreibt alle Felder via PATCH /api/admin/organization. Idempotent, rollback-sicher.' },
+      { id: 'Y-03', name: 'Verification-Review — grep-Check kein KNH-Begriff in generischem Code', type: 'REVIEW', neu: true, note: 'grep -r "KNH\|Kulturnetzwerk\|Vorstand\|Halja\|5B1EAB" src/ → nur in kulturverein.json erlaubt. Alle anderen Fundstellen fixen.' },
+    ]
+  },
+
+  // ══════════════════════════════════════════════════════
   //  M  MASTER-DEV-SYSTEM  (Superadmin-Infrastruktur)
   // ══════════════════════════════════════════════════════
   {
-    id: 'M', title: 'MASTER-DEV-SYSTEM — Plattform-Superadmin', week: 'KW 22', neu: true,
-    info: 'Separates Admin-System außerhalb der Org-Struktur. Eigene Tabelle, eigener Login, eigenes Panel. Voraussetzung: S abgeschlossen (Rollen-System stabil).',
+    id: 'M', title: 'MASTER-DEV-SYSTEM — Plattform-Superadmin', week: 'KW 23', neu: true,
+    info: 'Separates Admin-System außerhalb der Org-Struktur. Eigene Tabelle, eigener Login, eigenes Panel. Voraussetzung: U/X/V/W/Y abgeschlossen — Plattform muss universell konfigurierbar sein bevor Tenants angelegt werden.',
     tasks: [
       { id: 'M-01', name: 'platform_admins Tabelle + Seed (Master-Dev Account)', type: 'PROMPT', neu: true, sec: true, note: 'Tabelle: id, email, password_hash (bcrypt cost 12), name, level (1=Support, 2=Master-Dev), created_at. Erster Account via CLI-Seed.' },
       { id: 'M-02', name: 'Platform-Admin API + Login (JWT type=platform_admin)', type: 'PROMPT', neu: true, sec: true, note: 'POST /api/platform/login → JWT mit type=platform_admin Claim. Login: https://flovr.de/platform/login. Getrennte Middleware, kein Cross-Org-Zugriff ohne explizite Query.' },
@@ -513,29 +588,29 @@ const SECTIONS = [
   },
 
   // ══════════════════════════════════════════════════════
-  //  L  KNH-LAUNCH  (Ziel: Ende Mai 2026)
+  //  N  MODUL-BUILDER  (vor Launch — Toggle-System)
   // ══════════════════════════════════════════════════════
   {
-    id: 'L', title: 'KNH-LAUNCH — Ende Mai 2026', week: 'Ende Mai',
-    info: 'Datenmigration von EasyVerein, KNH-Config, Launch. Ziel: knh.flovr.de live Ende Mai 2026. Voraussetzung: alle Sektionen I–T abgeschlossen.',
+    id: 'N', title: 'MODUL-BUILDER — Module ein-/ausschalten', week: 'KW 23',
+    info: 'Org-Owner aktiviert/deaktiviert Module (Mitgliedsantrag, Öffentliche Seite, Inventar…). Das Modul-System ist die einzige Toggle-Autorität. Voraussetzung: W abgeschlossen.',
     tasks: [
-      { id: 'L-01', name: 'EasyVerein-Import (alle KNH-Mitglieder)', type: 'PROMPT + DU' },
-      { id: 'L-02', name: 'KNH Org-Config einrichten (#5B1EAB, Inter Display, KNH-Template)', type: 'DU' },
-      { id: 'L-03', name: 'Ersten Owner-Account (Vorstand) aktivieren', type: 'DU' },
-      { id: 'L-04', name: 'IS_LIVE = true setzen', type: 'DU' },
-      { id: 'L-05', name: 'Launch-Checkliste (alle Sektionen, 38+ Tabellen, Security bestanden)', type: 'REVIEW' },
+      { id: 'N-01', name: 'Modul-Builder Backend — org_modules Tabelle, activate/deactivate API', type: 'PROMPT', neu: true, sec: true, note: 'org_modules: tenant_id, module_key, is_active, config JSON. Endpoints: GET /api/org/modules, PATCH /api/admin/modules/{key}.' },
+      { id: 'N-02', name: 'Modul-Builder Frontend — Module-Tab im Owner-Panel', type: 'PROMPT', neu: true, note: 'Liste aller verfügbaren Module mit Toggle. Aktive Module sofort wirksam. Keine separaten Toggles in anderen Tabs.' },
     ]
   },
 
   // ══════════════════════════════════════════════════════
-  //  N P  POST-LAUNCH  (nach Pilot-Feedback)
+  //  L  KNH-LAUNCH  (Ziel: Ende Juni 2026)
   // ══════════════════════════════════════════════════════
   {
-    id: 'N', title: 'MODUL-BUILDER — Custom Tabs & Felder', week: 'ab Juni (nach Pilot)',
-    info: 'Org-Owner kann eigene Tabs mit Custom Fields anlegen. Tenant-isoliert. Erst nach KNH-Usertest sinnvoll.',
+    id: 'L', title: 'KNH-LAUNCH — Ende Juni 2026', week: 'Ende Juni',
+    info: 'Datenmigration von EasyVerein, KNH-Config via Y (kulturverein.json), Launch. Ziel: knh.flovr.de live Ende Juni 2026. Voraussetzung: alle Sektionen bis N abgeschlossen.',
     tasks: [
-      { id: 'N-01', name: 'Modul-Builder Backend', type: 'PROMPT', neu: true },
-      { id: 'N-02', name: 'Modul-Builder Frontend (Owner-Panel)', type: 'PROMPT', neu: true },
+      { id: 'L-01', name: 'EasyVerein-Import (alle KNH-Mitglieder)', type: 'PROMPT + DU' },
+      { id: 'L-02', name: 'kulturverein.json via apply-template importieren (Y-02)', type: 'PROMPT + DU', note: 'POST /api/org/apply-template → KNH-Branding, Tasks, Screening, Terminologie, Rollen in einem Schritt.' },
+      { id: 'L-03', name: 'Ersten Owner-Account (Vorstand) aktivieren', type: 'DU' },
+      { id: 'L-04', name: 'IS_LIVE = true setzen', type: 'DU' },
+      { id: 'L-05', name: 'Launch-Checkliste (alle Sektionen U–N abgeschlossen, Y-03 grep-Check bestanden, Security)', type: 'REVIEW' },
     ]
   },
   {
